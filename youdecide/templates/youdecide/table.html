@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>Meal Plan</title>
+    </head>
+    <table id='id_meal_table'>
+        {% for item in names %}
+        <tr class='recipe'><td style="border-bottom: 1px solid;"><a href="{{ item.url }}" target="_blank">{{ item.title }}</a></td><td>active time: {{ item.active_time }} </td><td>total time: {{ item.total_time }}</td><td>serves {{ item.yiel }}</td></tr>
+
+        {% endfor %}
+    </table>
+    <form method='GET' action='new_recipe'>
+        <input id='yep' type='submit' value='That looks good' />
+    </form>
+    <form method ='GET' action='nah'>
+        <input id='nope' type='submit' value='Maybe something else' />
+    </form>
+    <table id='grocery_list' style='border: 1px solid'>
+        {% for i in g_list %}
+        <tr><td>{{ i }}</td></tr>
+        {% endfor %}
+    </table>
+</html>
