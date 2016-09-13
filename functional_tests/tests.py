@@ -27,25 +27,24 @@ class NewVisitor(LiveServerTestCase):
     def test_is_you_decide_in_title(self):
         print(self.live_server_url)
         self.browser.get('http://localhost:8081/youdecide')
-        self.browser.implicitly_wait(1000)
 
-        #self.assertIn('You Decide', self.browser.title)
+        self.assertIn('You Decide', self.browser.title)
 
-        #self.browser.find_element_by_id('days').click()
+        self.browser.find_element_by_id('days').click()
 
-        #self.assertIn('You Decide', self.browser.title)
-        #table = self.browser.find_elements_by_class_name('recipe')
-        #assert(len(table)>=1)
+        self.assertIn('You Decide', self.browser.title)
+        table = self.browser.find_elements_by_class_name('recipe')
+        assert(len(table)>=1)
 
-        #currentItem=self.browser.find_element_by_id('id_meal_table').text
-        #self.browser.find_element_by_id('nah').click()
-        #new_item = self.browser.find_element_by_id('id_meal_table').text
+        currentItem=self.browser.find_element_by_id('id_meal_table').text
+        self.browser.find_element_by_id('nah').click()
+        new_item = self.browser.find_element_by_id('id_meal_table').text
 
-        #self.browser.find_element_by_id('yep').click()
+        self.browser.find_element_by_id('yep').click()
 
-        #self.assertNotEqual(currentItem, new_item)
-        #assert(len(self.browser.find_elements_by_class_name('recipe'))>1)
-
+        self.assertNotEqual(currentItem, new_item)
+        assert(len(self.browser.find_elements_by_class_name('recipe'))>1)
+        print('made it this far')
 
 
         
