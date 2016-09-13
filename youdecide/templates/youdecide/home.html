@@ -1,15 +1,22 @@
-<html>
-    <head>
-        <title>You Decide</title>
-    </head>
-    <body>
-        <h1>Good Evening</h1>
-        <form method='GET' action='new'>
-            <label>Shall we get started?</label>
-            <input type='submit' id='days' value="I'm fucking hungry" />
-            {% csrf_token %}
+{% extends 'youdecide/base.html' %}
+
+{% block content %}
+    <body id='bigBody'>
+    <div class='container'>
+        <div class='text-center jumbotron'>
+            <h1>Good Evening</h1>
+            <p>Shall we get started?</p>
+            <form method='GET' action='new'>
+                <input class='btn btn-lg' type='submit' id='days' value="I'm fucking hungry" />
             
-        </form>
+            </form>
+        </div>
+    </div>
+    <blockquote style='text-align:center;'> 
+        <p> Those who eat peanuts live longer than those who don't eat</p>
+        <footer> the subway car purchased by the peanut industry</footer>
+    </blockquote>
+        <p>
     </body>
 
-</html>
+{% endblock %}

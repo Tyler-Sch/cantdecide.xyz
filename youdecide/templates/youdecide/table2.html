@@ -6,7 +6,7 @@
         <h3> Having trouble making a choice? How about...</h3>
     </div>
     <div class='container'>
-        <div class='jumbotron' style='background-image:url("http://www.seriouseats.com/recipes/assets_c/2015/07/20150716-chicken-fried-chicken-recipe-food-lab-52-thumb-1500xauto-424949.jpg")'>
+        <div class='jumbotron'>
         <div class='text-center'>
             <h1>We Help</h1>
             <h1>You</h1>
@@ -20,21 +20,21 @@
                 </table>
                </div>
                </div>
+            
             <div class='container'>
-                <div class='row'>
-                    <span class='col-md-3'></span>
-                    <a href='new_recipe' class='btn btn-success btn-default col-md-3' id='yep' role='button'>mmm...That Sounds Nice</a>
-                    
-                    <a href='nah' id='nah'class='btn btn-danger btn-default col-md-3' role='button'>Maybe Something Else</a>
-                    <span class='col-md-3'></span>
+                <div='row'>
+                    <form method='GET' action='new_recipe'>
+                        <input class='btn btn-success btn-default' id='yep' type='submit' value='mmmm... that sounds good'/>
+                    </form>
+                    <form method='GET' action='nah'>
+                        <input class='btn btn-danger btn-default' id='nope' type='submit' value='Maybe something else'/>
+                    </form>
                 </div>
             </div>
-            
         </div>
     </div>
        <div class='container'>
     <table class='table'id='grocery_list' style='border: 1px solid'>
-        <th>Ingredients</th>
         {% for i in g_list %}
         <tr><td>{{ i }}</td></tr>
         {% endfor %}

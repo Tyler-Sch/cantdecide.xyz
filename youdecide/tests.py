@@ -128,7 +128,6 @@ class test_main_recipe_page(TestCase):
         request = HttpRequest()
         response = meals(request,str(test_chicken.pk))
 
-        self.assertIn('<html>', response.content.decode())
         self.assertIn('test chicken', response.content.decode())
 
         test_beef=Recipes.objects.create(title='test beef', yiel = 3,active_time=60, total_time=100)
