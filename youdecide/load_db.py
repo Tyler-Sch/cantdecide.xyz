@@ -77,7 +77,9 @@ def load_database(recipeList):
         #TODO Add image url
         list of instructions
     '''
+    
     for recipe in recipeList:
+        if len(recipe['ingredients']) == 0: continue
         t = recipe['title']
         u = recipe['url']
         y = recipe['yiel'] if recipe['yiel']  != 99 else 'error'
@@ -101,7 +103,6 @@ def load_database(recipeList):
             new_item.instructions_set.create(step=st)
         assert(len(recipe['instructions']) == new_item.instructions_set.count())
 
-        #ingredient_lis = new_item.ingredient_list_set.create()
 
         converted_list = extractIngredient(recipe['ingredients'])
         assert(len(converted_list)==len(recipe['ingredients']))

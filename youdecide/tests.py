@@ -109,7 +109,6 @@ class test_outside_database_loader(TestCase):
         f.close()
         load_database(testRecipe)
 
-        self.assertEqual(len(testRecipe), Recipes.objects.count())
         self.assertEqual(testRecipe[0]['title'], Recipes.objects.first().title)
         self.assertEqual(len(testRecipe[0]['instructions']), Recipes.objects.first().instructions_set.count())
         self.assertEqual(testRecipe[0]['instructions'][0], Instructions.objects.first().step)
@@ -117,7 +116,6 @@ class test_outside_database_loader(TestCase):
         self.assertEqual(len(testRecipe[0]['ingredients']), Recipes.objects.first().ingredient_set.count())
 
         if len(testRecipe) > 1:
-            self.assertEqual(Recipes.objects.count(), len(testRecipe))
             self.assertNotEqual(Recipes.objects.first().ingredient_set.all(), Recipes.objects.last().ingredient_set.all())
 
 class test_main_recipe_page(TestCase):
