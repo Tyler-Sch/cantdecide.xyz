@@ -74,18 +74,23 @@ def load_database(recipeList):
         'active_time'
         'total_time'
         list of ingredients. Use helper function to extract the import parts
+        #TODO Add image url
         list of instructions
     '''
     for recipe in recipeList:
         t = recipe['title']
         u = recipe['url']
-        y = extract_yield(recipe['yiel'])
-        at = convert_time_to_min(recipe['active_time'])
-        tt = convert_time_to_min(recipe['total_time'])
-        plus = '+' if 'plus' in recipe['active_time'] else ''
+        y = recipe['yiel'] if recipe['yiel']  != 99 else 'error'
+        at = recipe['active_time'] if recipe['active_time']  != 999 else 'Please see recipe'
+        tt = recipe['total_time'] if recipe['total_time']  != 999 else 'Please see recipe'
+        try:
+            imageUrl = recipe['picture_url']
+        except TypeError:
+            imageUrl = ''
+        #plus = '+' if 'plus' in recipe['active_time'] else ''
 
         try:
-            new_item=Recipes.objects.create(title=t, url=u, yiel=y, active_time=at, total_time=tt, time_plus=plus)
+            new_item=Recipes.objects.create(title=t, url=u, yiel=y, active_time=at, total_time=tt, time_plus='',imgUrl=imageUrl)
         except AttributeError:
             f = open('errorrecipelog.json','a')
             f.write(json.dumps(recipe))

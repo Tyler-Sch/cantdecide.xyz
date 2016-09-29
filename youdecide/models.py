@@ -3,10 +3,11 @@ from django.db import models
 class Recipes(models.Model):
     url = models.URLField(default ="")
     title = models.CharField(max_length=200, default='')
-    yiel = models.IntegerField(default=0)
-    active_time = models.IntegerField(default=0)
-    total_time = models.IntegerField(default=0)
+    yiel = models.CharField(max_length=100, default='')
+    active_time = models.CharField(max_length=100,default='')
+    total_time = models.CharField(max_length=100,default='')
     time_plus = models.CharField(max_length=1, default='')
+    imgUrl = models.URLField(default='')
     
     def __str__(self):
         return self.title

@@ -25,7 +25,7 @@ class Test_data_base_entries(TestCase):
     
     def test_can_data_base_items_be_constructed(self):
         test_chicken = Recipes.objects.create(title='Simple Roast Chicken', url='http://www.example.com',yiel = 2,
-            active_time=10, total_time=60)
+            active_time='10', total_time='60')
         self.assertEqual(Recipes.objects.first().title,'Simple Roast Chicken')
         test_instuction1 = Instructions.objects.create(recipe=test_chicken, step = 'Go to store, find the most beautiful chicken you have ever seen, buy it.')
         test_instruction2 = Instructions.objects.create(recipe=Recipes.objects.get(title='Simple Roast Chicken'), step='Take the chicken out of packaging. Preheat the oven to 325. Caress.')
@@ -50,8 +50,8 @@ class Test_data_base_entries(TestCase):
     def test_that_two_items_wont_intersect(self):
         self.assertEqual(Recipes.objects.count(),0)
 
-        test_chicken = Recipes.objects.create(title='Chicken', url='http://www.blah.com', yiel=2, active_time=10, total_time=60)
-        test_beef = Recipes.objects.create(title='Beef', url='http://www.blahblah.com', yiel=2, active_time=5, total_time=100)
+        test_chicken = Recipes.objects.create(title='Chicken', url='http://www.blah.com', yiel='2', active_time='10', total_time='60')
+        test_beef = Recipes.objects.create(title='Beef', url='http://www.blahblah.com', yiel='2', active_time='5', total_time='100')
 
         test_instruction_c1 = test_chicken.instructions_set.create(step='Go to store, find the most beautiful chicken')
         test_instruction_c2 = test_chicken.instructions_set.create(step='Buy it')
@@ -88,7 +88,7 @@ class Test_data_base_entries(TestCase):
         self.assertNotIn('chicken', [i.item for i in test_beef.ingredient_set.all()])
         self.assertIn('chicken', [i.item for i in test_chicken.ingredient_set.all()])
 
-'''
+
 class test_outside_database_loader(TestCase):
     def test_convert_time_to_min(self):
         x = convert_time_to_min('1 hour')
@@ -102,9 +102,9 @@ class test_outside_database_loader(TestCase):
         self.assertEqual(90, convert_time_to_min('1 1/2 hours'))
         self.assertEqual(15, convert_time_to_min('15 min'))
         self.assertEqual(120, convert_time_to_min('1 to 2 hours'))
-
+    
     def test_load_db(self):
-        f=open('Items.json','r')
+        f=open('../recipes/mains/saveurMainCourseRecipesAll.json','r')
         testRecipe = json.loads(f.read())
         f.close()
         load_database(testRecipe)
@@ -120,17 +120,16 @@ class test_outside_database_loader(TestCase):
             self.assertEqual(Recipes.objects.count(), len(testRecipe))
             self.assertNotEqual(Recipes.objects.first().ingredient_set.all(), Recipes.objects.last().ingredient_set.all())
 
-'''
 class test_main_recipe_page(TestCase):
 
     def test_main_recipe_page_loads(self):
-        test_chicken = Recipes.objects.create(title='test chicken', yiel = 3, active_time=60, total_time=100)
+        test_chicken = Recipes.objects.create(title='test chicken', yiel ='3', active_time='60', total_time='100')
         request = HttpRequest()
         response = meals(request,str(test_chicken.pk))
 
         self.assertIn('test chicken', response.content.decode())
 
-        test_beef=Recipes.objects.create(title='test beef', yiel = 3,active_time=60, total_time=100)
+        test_beef=Recipes.objects.create(title='test beef', yiel = '3',active_time='60', total_time='100')
         request = HttpRequest()
         response = meals(request, str(test_beef.pk))
 

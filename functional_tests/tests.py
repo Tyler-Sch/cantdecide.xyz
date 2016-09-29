@@ -25,8 +25,7 @@ class NewVisitor(LiveServerTestCase):
         self.browser.quit()
 
     def test_is_you_decide_in_title(self):
-        print(self.live_server_url)
-        self.browser.get('http://localhost:8081/youdecide')
+        self.browser.get('http://cantdecide.xyz/youdecide')
 
         self.assertIn('You Decide', self.browser.title)
 

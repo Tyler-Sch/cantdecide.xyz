@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import random
 import  os
 import json
@@ -26,13 +27,11 @@ def grocery_list(listOfItems):
 
 
 
-
+'''
 def extractIngredient(ingredient_list):
-    '''
-        Takes a list of strings that have groceries in them. Hopefully the main ingredient
-        follows a measurement and a comma seperates the imporant ingredient from the others
-        ideal format = quanity measurement of item, blah blah blah
-    '''
+        #Takes a list of strings that have groceries in them. Hopefully the main ingredient
+        #follows a measurement and a comma seperates the imporant ingredient from the others
+        #ideal format = quanity measurement of item, blah blah blah
     measurement = re.compile(r'(([\d/. ]|\bone|\btwo|\bthree|\bfour|five)+( |-g)+((jar|sprig|tablepoon|serving|chunk|stalk|head|piece|peice|ounce|oz\b|pinch|tablespoon|whole dried|whole|\bg\b|gram|small bunch|bunch[e]?|cup|medium|medium-size|teaspoon|pound|lb|can|sprig|small|knob|ear|quart|large|slice|pint|gallon)[s]?)?)',re.I)
     v_a_p = re.compile(r'(\w+ed\b)|(\w+ly\b)|(\bto\b)|(for serving)|(for garnish)|(\((.)+?\))|(plus)|(\bof)|(from)|(minced)|(\binch)', re.I)
     final_lst = []
@@ -50,4 +49,33 @@ def extractIngredient(ingredient_list):
         if ww: final_lst.append((ww.group(), j))
         else:final_lst.append(('',j))
     return final_lst        
-       
+'''
+
+def extractIngredient(ingredientList):
+    '''
+    takes recipe dictionary, extracts the measurement amount and a simplified ingredient
+    returns a tuple (measurement, simpleIngredient)
+    '''
+    
+    import re
+    ingredients = []
+    dead_parrot = re.compile(r'\(.*?\)')
+    measurement = re.compile(r'(^([\d/.⁄ ]|to|\bone\-?|\btwo|\bthree|\bfour|five)+( |-g)+((jar|sprig|tablepoon|tbsp|tsp|serving|chunk|stalk|head|piece|peice|ounce|oz|pinch|tablespoon|whole dried|whole|\bg\b|gram|small bunch|bunch[e]?|cup|heaping cup|medium|medium-size|teaspoon|pound|lb|can|sprig|small|knob|ear|quart|large|slice|pint|gallon)[s]?\b\.?)?)',re.I)    
+    slashthing = re.compile('⁄')
+    addIng = ingredients.append
+    for i in ingredientList:
+        if 'bone-in,' in i or 'skin-on' in i or 'boneless,' in i:i= re.sub(',','',i,1)            
+        if re.search(r'\bcut\b|inches',i,re.I) and not re.search(r'center-cut', i,re.I):i = i[:re.search(r'cut|inches',i).start()]
+        i = ' '.join(re.sub(dead_parrot,' ',i).lower().split())
+        i = i.split(',')[0]
+        i = re.sub(slashthing, '/',i)
+        measure = re.match(measurement, i)
+        rest = re.sub(measurement, '', i)
+        if measure:
+            addIng(tuple([measure.group().strip(), rest.strip()]))
+        else:
+            addIng(tuple(['',rest]))
+    
+   
+    return ingredients
+        
