@@ -14,7 +14,7 @@
                 <div class='container'>
                  <table id='id_meal_table' class='table table-hover'style='padding-top:30 px'>
                 {% for item in names %}
-                <tr class='recipe'><td><a href="{{ item.url }}" target="_blank">{{ item.title }}</a></td><td>active time: {{ item.active_time }} </td><td>total time: {{ item.total_time }}</td><td>serves {{ item.yiel }}</td></tr>
+                <tr class='recipe'><td><a href="{{ item.url }}" target="_blank">{{ item.title }}</a></td><td>active time: {{ item.active_time }} </td><td>total time: {{ item.total_time }}</td><td>{{ item.yiel }}</td></tr>
 
                 {% endfor %}
                 </table>

@@ -85,7 +85,7 @@ def load_database(recipeList):
         tt = recipe['total_time'] if recipe['total_time']  != 999 else 'Please see recipe'
         try:
             imageUrl = recipe['picture_url']
-        except TypeError:
+        except KeyError:
             imageUrl = ''
         #plus = '+' if 'plus' in recipe['active_time'] else ''
 
