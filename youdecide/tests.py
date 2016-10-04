@@ -104,7 +104,7 @@ class test_outside_database_loader(TestCase):
         self.assertEqual(120, convert_time_to_min('1 to 2 hours'))
     
     def test_load_db(self):
-        f=open('../recipes/mains/saveurMainCourseRecipesAll.json','r')
+        f=open('recipes/mains/saveurMainCourseRecipesAll.json','r')
         testRecipe = json.loads(f.read())
         f.close()
         load_database(testRecipe)

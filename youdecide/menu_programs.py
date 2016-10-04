@@ -64,7 +64,7 @@ def extractIngredient(ingredientList):
     slashthing = re.compile('⁄')
     addIng = ingredients.append
     for i in ingredientList:
-        if 'bone-in,' in i or 'skin-on' in i or 'boneless,' in i:i= re.sub(',','',i,1)            
+        if 'bone-in,' in i or 'skin-on' in i or 'boneless,' in i or 'double-cut' in i:i= re.sub(',','',i,1)            
         if re.search(r'\bcut\b|inches',i,re.I) and not re.search(r'center-cut', i,re.I):i = i[:re.search(r'cut|inches',i).start()]
         i = ' '.join(re.sub(dead_parrot,' ',i).lower().split())
         i = i.split(',')[0]
@@ -78,4 +78,27 @@ def extractIngredient(ingredientList):
     
    
     return ingredients
+
+def isVegan(recipe):
+    '''
+        take a recipe object
+        checks the title for any non-vegan items
+        then checks each ingredient
         
+        WILL HAVE PROBLEMS WITH VEGAN FOOD WITH NON-VEGAN NAMES ie: un-turkey, faux chicken
+    '''
+    title = recipe.title.lower()
+    if 'vegan' in title.lower(): return True
+    notVegan = set(['mussels','butter','bass','turbot','flounder','oxtail','veal','porterhouse','grouper','snapper','tuna','cod','trout','prawns','branzino','sole','anchovy','anchovies','sardines','calamari','halibut','prime rib','lobster','lobsters','foie gras','quail','rabbit','venison','crabs','crab','goat','proscuitto','fontina','chedder','ricotta','yogurt','cream','marscapone','mascarpone','guanciale','squid','ribs','spareribs','rib','bacon','bratwurst','turkey','steak','steaks','mozzarella','scallops','meat','pig','chicken','goose', 'beef','pork','bison','filet', 'egg ','eggs','huevos','cheese','milk','fish','sardine','haddock','shrimp','duck','lamb','ham','carne','clams','salmon'])
+    vegan = True if not len(set(re.split(r'\W+', title)).intersection(notVegan)) else False
+    
+    if vegan:
+        ingredients = (x.original_txt.lower() for x in recipe.ingredient_set.all())
+        joinedSet = set(re.split(r'\W+'," ".join(ingredients)))
+        if 'vegan' in joinedSet: return True
+        if len(joinedSet.intersection(notVegan)):
+            return False
+    
+    return vegan
+    
+            

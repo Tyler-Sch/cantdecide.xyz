@@ -45,7 +45,7 @@ class NewVisitor(LiveServerTestCase):
         assert(len(self.browser.find_elements_by_class_name('recipe'))>1)
         print('made it this far')
 
-
+        self.browser.find_element_by_id('vegan_box').click()
         
     
 
