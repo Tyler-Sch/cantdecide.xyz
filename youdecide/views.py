@@ -13,7 +13,7 @@ def meals(request, days):
     return render(request, 'youdecide/table.html',{'names':names, 'g_list':g_list})
     
 def new(request):
-    return redirect('meals', days=str(find_recipes()))
+    return redirect('meals',days=str(find_recipes(request)))
 
 def new_recipe(request, current):
     recipes = current.split('&')
