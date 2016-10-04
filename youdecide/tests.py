@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from .models import Recipes, Ingredient, Instructions 
 from .load_db import convert_time_to_min, load_database
 import json
+import os
 
 
 class home_page_test(TestCase):
@@ -103,21 +104,6 @@ class test_outside_database_loader(TestCase):
         self.assertEqual(15, convert_time_to_min('15 min'))
         self.assertEqual(120, convert_time_to_min('1 to 2 hours'))
     
-    def test_load_db(self):
-        f=open('recipes/mains/saveurMainCourseRecipesAll.json','r')
-        testRecipe = json.loads(f.read())
-        f.close()
-        load_database(testRecipe)
-
-        self.assertEqual(testRecipe[0]['title'], Recipes.objects.first().title)
-        self.assertEqual(len(testRecipe[0]['instructions']), Recipes.objects.first().instructions_set.count())
-        self.assertEqual(testRecipe[0]['instructions'][0], Instructions.objects.first().step)
-        self.assertEqual(testRecipe[0]['ingredients'][0], Ingredient.objects.first().original_txt)
-        self.assertEqual(len(testRecipe[0]['ingredients']), Recipes.objects.first().ingredient_set.count())
-
-        if len(testRecipe) > 1:
-            self.assertNotEqual(Recipes.objects.first().ingredient_set.all(), Recipes.objects.last().ingredient_set.all())
-
 class test_main_recipe_page(TestCase):
 
     def test_main_recipe_page_loads(self):
@@ -148,8 +134,41 @@ class test_add_new_recipes(TestCase):
         response = new_recipe(request, '1')
 
 
-    #def test_page_nah_loads(self):
-        #request = HttpRequest()
-        #response = nah(request,'2&3') 
-    
+class test_filters(TestCase):
+    def test_load_db_and_test_filters(self):
+        f=open('recipes/mains/saveurMainCourseRecipesAll.json','r')
+        testRecipe = json.loads(f.read())
+        f.close()
+        load_database(testRecipe)
+
+        self.assertEqual(testRecipe[0]['title'], Recipes.objects.first().title)
+        self.assertEqual(len(testRecipe[0]['instructions']), Recipes.objects.first().instructions_set.count())
+        self.assertEqual(testRecipe[0]['instructions'][0], Instructions.objects.first().step)
+        self.assertEqual(testRecipe[0]['ingredients'][0], Ingredient.objects.first().original_txt)
+        self.assertEqual(len(testRecipe[0]['ingredients']), Recipes.objects.first().ingredient_set.count())
+
+        if len(testRecipe) > 1:
+            self.assertNotEqual(Recipes.objects.first().ingredient_set.all(), Recipes.objects.last().ingredient_set.all())
+
+        from youdecide import menu_programs
+        from youdecide.searches.queryWrapper import writeAFile
+
+        writeAFile(menu_programs.isVegan, 'veganFile', Recipes.objects.all())
+        f = open('youdecide/searches/searchFiles/veganFile.json','r')
+        dirList = os.listdir('youdecide/searches/searchFiles')
+        self.assertIn('veganFile.json',dirList)
+        vF = json.loads(f.read())
+        f.close()
+        assert(len(vF) > 1)
+        #make sure you can search for vegan recipes
+        x=Recipes.objects.get(pk=vF[0])
+        y=Recipes.objects.get(pk=vF[1])
+        self.assertNotEqual(x,y)
+
+        #make sure you can call vegan recipes
+        
+
+
+
+
 
