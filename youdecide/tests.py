@@ -1,12 +1,14 @@
 from django.test import TestCase
 from django.core.urlresolvers import resolve
 from .views import home, meals, new_recipe, nah
-from django.http import HttpRequest
+from django.http import HttpRequest, QueryDict
 from django.template.loader import render_to_string
 from .models import Recipes, Ingredient, Instructions 
 from .load_db import convert_time_to_min, load_database
+from .menu_programs import find_recipes
 import json
 import os
+import random
 
 
 class home_page_test(TestCase):
@@ -136,7 +138,7 @@ class test_add_new_recipes(TestCase):
 
 class test_filters(TestCase):
     def test_load_db_and_test_filters(self):
-        f=open('recipes/mains/saveurMainCourseRecipesAll.json','r')
+        f=open('recipes/mains/items.json','r')
         testRecipe = json.loads(f.read())
         f.close()
         load_database(testRecipe)
@@ -153,10 +155,10 @@ class test_filters(TestCase):
         from youdecide import menu_programs
         from youdecide.searches.queryWrapper import writeAFile
 
-        writeAFile(menu_programs.isVegan, 'veganFile', Recipes.objects.all())
-        f = open('youdecide/searches/searchFiles/veganFile.json','r')
+        writeAFile(menu_programs.isVegan, 'vegan', Recipes.objects.all())
+        f = open('youdecide/searches/searchFiles/vegan.json','r')
         dirList = os.listdir('youdecide/searches/searchFiles')
-        self.assertIn('veganFile.json',dirList)
+        self.assertIn('vegan.json',dirList)
         vF = json.loads(f.read())
         f.close()
         assert(len(vF) > 1)
@@ -166,6 +168,24 @@ class test_filters(TestCase):
         self.assertNotEqual(x,y)
 
         #make sure you can call vegan recipes
+        #do views pass request around appropriatly?
+        request1 = HttpRequest()
+        request1.method = 'GET'
+        request1.GET = QueryDict('vegan=True')
+        self.assertEqual(request1.GET['vegan'], 'True')
+        recipe = str(vF[random.choice(range(len(vF)))])
+        x = meals(request1,recipe)
+        y =new_recipe(request1, recipe)
+        self.assertNotEqual(x,y)
+        
+        #test Find Recipes
+
+        for i in range(1000):
+            x = find_recipes(request1)
+            self.assertIn(x, vF)
+
+
+        
         
 
 

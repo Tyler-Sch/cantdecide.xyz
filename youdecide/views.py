@@ -7,7 +7,6 @@ def home(request):
     return render(request, 'youdecide/home.html')
 
 def meals(request, days):
-    #names = [find_recipes()]
     recipes = days.split('&')
     names = [Recipes.objects.get(pk=i) for i in recipes]
     g_list = grocery_list(set(x.item.lower() for y in names for x in y.ingredient_set.all()))
@@ -18,10 +17,10 @@ def new(request):
 
 def new_recipe(request, current):
     recipes = current.split('&')
-    recipes.append(str(find_recipes()))
+    recipes.append(str(find_recipes(request)))
     return redirect('meals', days="&".join(recipes))
 
 def nah(request, current):
     recipes = current.split('&')
-    recipes[-1] = str(find_recipes())
+    recipes[-1] = str(find_recipes(request))
     return redirect('meals', days="&".join(recipes))

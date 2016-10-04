@@ -5,11 +5,27 @@ import json
 import re
 from .models import Recipes
 
-def find_recipes():
+def find_recipes(request):
     '''
-        returns a random recipe
+        applys filters and 
+        returns a random recipe that matches the parameters
+        
     '''
-    x = random.choice(Recipes.objects.all())
+    filterDict = request.GET.dict()
+    if not filterDict: 
+        x = random.choice(Recipes.objects.all())
+    else:
+        option_set = set((i.pk for i in Recipes.objects.all()))
+        options = os.listdir('youdecide/searches/searchFiles')
+        for i in filterDict:
+            if ''.join([i,'.json']) in options:
+                f = open('youdecide/searches/searchFiles/'+ i +'.json', 'r')
+                recipe_pk = json.loads(f.read())
+                f.close()
+                option_set = option_set.intersection(recipe_pk)
+        return random.sample(option_set,1)[0]
+                
+        
     return x.pk
 
 
