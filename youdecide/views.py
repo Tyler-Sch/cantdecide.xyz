@@ -16,8 +16,12 @@ def new(request):
     return redirect('meals',days=str(find_recipes(request)))
 
 def new_recipe(request, current):
+    param = request.GET.dict()
     recipes = current.split('&')
-    recipes.append(str(find_recipes(request)))
+    if 'nope' in param:
+        recipes[-1] = str(find_recipes(request))
+    else:
+        recipes.append(str(find_recipes(request)))
     return redirect('meals', days="&".join(recipes))
 
 def nah(request, current):

@@ -92,7 +92,8 @@ class Test_data_base_entries(TestCase):
         self.assertIn('chicken', [i.item for i in test_chicken.ingredient_set.all()])
 
 
-class test_outside_database_loader(TestCase):
+class test_outside_helper_functions(TestCase):
+    
     def test_convert_time_to_min(self):
         x = convert_time_to_min('1 hour')
         self.assertEqual(x, 60)
@@ -136,7 +137,7 @@ class test_add_new_recipes(TestCase):
         response = new_recipe(request, '1')
 
 
-class test_filters(TestCase):
+class test_filters_and_database_loader(TestCase):
     def test_load_db_and_test_filters(self):
         f=open('recipes/mains/items.json','r')
         testRecipe = json.loads(f.read())

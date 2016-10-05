@@ -20,11 +20,13 @@
                 </table>
                </div>
                </div>
-            <div class='container'>
-                <div>
-                    <a href='new_recipe' class='btn btn-success btn-default col-xs-6' id='yep' role='button'>mmm...That Sounds Nice</a>
-                    
-                    <a href='nah' id='nah'class='btn btn-danger btn-default col-xs-6' role='button'>Maybe Something Else</a>
+             <div class='container'>
+                <div='row'>
+                    <form method='GET' action='new_recipe'>
+                        <input class='btn btn-success btn-default' id='yep' type='submit' value='that sounds nice' name='new'/>
+                        <input class='btn btn-danger btn-default' id='nope' type='submit' value='no t.hanks' name='nope'/>
+                        <input type='radio' name='restrictions' value='vegan'/>are you vegan? check this box. (slightly better filters on their way)
+                    </form>
                 </div>
             </div>
             
