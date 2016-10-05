@@ -171,8 +171,8 @@ class test_filters(TestCase):
         #do views pass request around appropriatly?
         request1 = HttpRequest()
         request1.method = 'GET'
-        request1.GET = QueryDict('vegan1=True')
-        self.assertEqual(request1.GET['vegan1'], 'True')
+        request1.GET = QueryDict('restrictions=vegan1')
+        self.assertEqual(request1.GET['restrictions'], 'vegan1')
         recipe = str(vF[random.choice(range(len(vF)))])
         x = meals(request1,recipe)
         y =new_recipe(request1, recipe)

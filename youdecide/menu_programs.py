@@ -12,17 +12,17 @@ def find_recipes(request):
         
     '''
     filterDict = request.GET.dict()
-    if not filterDict: 
+    if 'restrictions' not in filterDict: 
         x = random.choice(Recipes.objects.all())
     else:
         option_set = set((i.pk for i in Recipes.objects.all()))
         options = os.listdir('youdecide/searches/searchFiles')
-        for i in filterDict:
-            if ''.join([i,'.json']) in options:
-                f = open('youdecide/searches/searchFiles/'+ i +'.json', 'r')
-                recipe_pk = json.loads(f.read())
-                f.close()
-                option_set = option_set.intersection(recipe_pk)
+        i = filterDict['restrictions']
+        if ''.join([i,'.json']) in options:
+            f = open('youdecide/searches/searchFiles/'+ i +'.json', 'r')
+            recipe_pk = json.loads(f.read())
+            f.close()
+            option_set = option_set.intersection(recipe_pk)
         return random.sample(option_set,1)[0] if option_set else 0
                 
         
