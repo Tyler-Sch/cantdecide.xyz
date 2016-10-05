@@ -155,10 +155,10 @@ class test_filters(TestCase):
         from youdecide import menu_programs
         from youdecide.searches.queryWrapper import writeAFile
 
-        writeAFile(menu_programs.isVegan, 'vegan', Recipes.objects.all())
-        f = open('youdecide/searches/searchFiles/vegan.json','r')
+        writeAFile(menu_programs.isVegan, 'vegan1', Recipes.objects.all())
+        f = open('youdecide/searches/searchFiles/vegan1.json','r')
         dirList = os.listdir('youdecide/searches/searchFiles')
-        self.assertIn('vegan.json',dirList)
+        self.assertIn('vegan1.json',dirList)
         vF = json.loads(f.read())
         f.close()
         assert(len(vF) > 1)
@@ -171,8 +171,8 @@ class test_filters(TestCase):
         #do views pass request around appropriatly?
         request1 = HttpRequest()
         request1.method = 'GET'
-        request1.GET = QueryDict('vegan=True')
-        self.assertEqual(request1.GET['vegan'], 'True')
+        request1.GET = QueryDict('vegan1=True')
+        self.assertEqual(request1.GET['vegan1'], 'True')
         recipe = str(vF[random.choice(range(len(vF)))])
         x = meals(request1,recipe)
         y =new_recipe(request1, recipe)

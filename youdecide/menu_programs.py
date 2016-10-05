@@ -23,7 +23,7 @@ def find_recipes(request):
                 recipe_pk = json.loads(f.read())
                 f.close()
                 option_set = option_set.intersection(recipe_pk)
-        return random.sample(option_set,1)[0]
+        return random.sample(option_set,1)[0] if option_set else 0
                 
         
     return x.pk
