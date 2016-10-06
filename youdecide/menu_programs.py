@@ -11,18 +11,18 @@ def find_recipes(request):
         returns a random recipe that matches the parameters
         
     '''
-    filterDict = request.GET.dict()
-    if 'restrictions' not in filterDict: 
+    filterDict = request.GET.getlist('restrictions')
+    if not filterDict: 
         x = random.choice(Recipes.objects.all())
     else:
         option_set = set((i.pk for i in Recipes.objects.all()))
         options = os.listdir('youdecide/searches/searchFiles')
-        i = filterDict['restrictions']
-        if ''.join([i,'.json']) in options:
-            f = open('youdecide/searches/searchFiles/'+ i +'.json', 'r')
-            recipe_pk = json.loads(f.read())
-            f.close()
-            option_set = option_set.intersection(recipe_pk)
+        for i in filterDict:
+            if ''.join([i,'.json']) in options:
+                f = open('youdecide/searches/searchFiles/'+ i +'.json', 'r')
+                recipe_pk = json.loads(f.read())
+                f.close()
+                option_set = option_set.intersection(recipe_pk)
         return random.sample(option_set,1)[0] if option_set else 0
                 
         
@@ -35,7 +35,7 @@ def grocery_list(listOfItems):
     and silly things you dont need to buy
     '''
 
-    discard = set(['&nbsp','kosher salt and ground black pepper','ground pepper','ground black pepper','kosher salt', 'water','salt','pepper', 'salt and pepper', 'salt and black pepper'])
+    discard = set(['&nbsp','kosher salt and ground black pepper','kosher salt and freshly ground black pepper','ground pepper','ground black pepper','kosher salt', 'water','salt','pepper', 'salt and pepper', 'salt and black pepper'])
 
     return listOfItems.difference(discard)
 
@@ -95,26 +95,29 @@ def extractIngredient(ingredientList):
    
     return ingredients
 
-def isVegan(recipe):
+def restrictions(recipe, restriction):
     '''
         take a recipe object
         checks the title for any non-vegan items
         then checks each ingredient
         
-        WILL HAVE PROBLEMS WITH VEGAN FOOD WITH NON-VEGAN NAMES ie: un-turkey, faux chicken
+        WILL HAVE PROBLEMS WITH VEGAN FOOD WITH NON-VEGAN NAMES UNLESS 'VEGAN' IS SAID IN THE INGREDIENTS OR TITLE
+        ie: un-turkey, faux chicken
     '''
     title = recipe.title.lower()
-    if 'vegan' in title.lower(): return True
-    notVegan = set(['mussels','butter','bass','turbot','flounder','oxtail','veal','porterhouse','grouper','snapper','tuna','cod','trout','prawns','branzino','sole','anchovy','anchovies','sardines','calamari','halibut','prime rib','lobster','lobsters','foie gras','quail','rabbit','venison','crabs','crab','goat','proscuitto','fontina','chedder','ricotta','yogurt','cream','marscapone','mascarpone','guanciale','squid','ribs','spareribs','rib','bacon','bratwurst','turkey','steak','steaks','mozzarella','scallops','meat','pig','chicken','goose', 'beef','pork','bison','filet', 'egg ','eggs','huevos','cheese','milk','fish','sardine','haddock','shrimp','duck','lamb','ham','carne','clams','salmon','herring','chorizo','mackeral','catfish'])
-    vegan = True if not len(set(re.split(r'\W+', title)).intersection(notVegan)) else False
+    if restriction in title.lower(): return True
+    restrictDict = {'vegan':set(['mussels','butter','bass','turbot','flounder','oxtail','veal','porterhouse','grouper','snapper','tuna','cod','trout','prawns','branzino','sole','anchovy','anchovies','sardines','calamari','halibut','prime rib','lobster','lobsters','foie gras','quail','rabbit','venison','crabs','crab','goat','proscuitto','fontina','chedder','ricotta','yogurt','cream','marscapone','mascarpone','guanciale','squid','ribs','spareribs','rib','bacon','bratwurst','turkey','steak','steaks','mozzarella','scallops','meat','pig','chicken','goose', 'beef','pork','bison','filet', 'egg ','eggs','huevos','cheese','milk','fish','sardine','haddock','shrimp','duck','lamb','ham','carne','clams','salmon','herring','chorizo','mackeral','catfish']),'vegetarian':set(['mussels','bass','turbot','flounder','oxtail','veal','porterhouse','grouper','snapper','tuna','cod','trout','prawns','branzino','sole','anchovy','anchovies','sardines','calamari','halibut','prime rib','lobster','lobsters','foie gras','quail','rabbit','venison','crabs','crab','proscuitto','guanciale','squid','ribs','spareribs','rib','bacon','bratwurst','turkey','steak','steaks','scallops','meat','pig','chicken','goose', 'beef','pork','bison','fish','sardine','haddock','shrimp','duck','lamb','ham','carne','clams','salmon'])}
+    #check title
+    result = True if not len(set(re.split(r'\W+', title)).intersection(restrictDict[restriction])) else False
     
-    if vegan:
+    if result:
         ingredients = (x.original_txt.lower() for x in recipe.ingredient_set.all())
         joinedSet = set(re.split(r'\W+'," ".join(ingredients)))
-        if 'vegan' in joinedSet: return True
-        if len(joinedSet.intersection(notVegan)):
+        if restriction in joinedSet: return True
+        if len(joinedSet.intersection(restrictDict[restriction])):
             return False
     
-    return vegan
-    
-            
+    return result 
+
+
+

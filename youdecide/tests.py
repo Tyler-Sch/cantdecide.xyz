@@ -156,17 +156,24 @@ class test_filters_and_database_loader(TestCase):
         from youdecide import menu_programs
         from youdecide.searches.queryWrapper import writeAFile
 
-        writeAFile(menu_programs.isVegan, 'vegan1', Recipes.objects.all())
+        writeAFile(menu_programs.restrictions,'vegan','vegan1', Recipes.objects.all())
+        writeAFile(menu_programs.restrictions,'vegetarian','vegetarian1',Recipes.objects.all())
         f = open('youdecide/searches/searchFiles/vegan1.json','r')
+        z = open('youdecide/searches/searchFiles/vegetarian1.json')
         dirList = os.listdir('youdecide/searches/searchFiles')
         self.assertIn('vegan1.json',dirList)
+        self.assertIn('vegetarian1.json', dirList)
         vF = json.loads(f.read())
+        veg = json.loads(z.read())
+        z.close()
         f.close()
         assert(len(vF) > 1)
+        assert(len(veg) > 1)
         #make sure you can search for vegan recipes
         x=Recipes.objects.get(pk=vF[0])
         y=Recipes.objects.get(pk=vF[1])
         self.assertNotEqual(x,y)
+        self.assertNotEqual(vF,veg)
 
         #make sure you can call vegan recipes
         #do views pass request around appropriatly?
@@ -178,6 +185,11 @@ class test_filters_and_database_loader(TestCase):
         x = meals(request1,recipe)
         y =new_recipe(request1, recipe)
         self.assertNotEqual(x,y)
+
+        request2 = HttpRequest()
+        request2.GET = QueryDict('restrictions=vegetarian1')
+        nR=new_recipe(request2, recipe)
+
         
         #test Find Recipes
 
@@ -185,7 +197,17 @@ class test_filters_and_database_loader(TestCase):
             x = find_recipes(request1)
             self.assertIn(x, vF)
 
+        for i in range(1000):
+            x = find_recipes(request2)
+            self.assertIn(x,veg)
 
+        request3 = HttpRequest()
+        request3.GET = QueryDict('restrictions=vegan1&restictions=vegetarian1')
+       
+        for i in range(1000):
+            x = find_recipes(request3)
+            self.assertIn(x,vF)
+       
         
         
 
