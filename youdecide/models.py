@@ -12,6 +12,13 @@ class Recipes(models.Model):
     def __str__(self):
         return self.title
 
+    def ingredients(self):
+        return self.ingredient_set.all()
+
+    def instructions(self):
+        instruct = self.instructions_set.all()
+        return [instruct[i].step for i in range(len(instruct)-1,-1,-1)]
+
 class Instructions(models.Model):
     recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE)
     step = models.TextField(default ='')

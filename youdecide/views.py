@@ -6,7 +6,7 @@ from .models import Recipes
 def home(request):
     return render(request, 'youdecide/home.html')
 
-def meals(request, days):
+def meals(request, days,**kwargs):
     recipes = days.split('&')
     names = [Recipes.objects.get(pk=i) for i in recipes]
     g_list = grocery_list(set(x.item.lower() for y in names for x in y.ingredient_set.all()))
