@@ -1,6 +1,6 @@
-from django.test import TestCase
+from django.test import TestCase,LiveServerTestCase
 from django.core.urlresolvers import resolve
-from .views import home, meals, new_recipe, nah
+from .views import home, meals, new_recipe, nah, newRecipeAjax
 from django.http import HttpRequest, QueryDict
 from django.template.loader import render_to_string
 from .models import Recipes, Ingredient, Instructions 
@@ -91,6 +91,19 @@ class Test_data_base_entries(TestCase):
         self.assertNotIn('chicken', [i.item for i in test_beef.ingredient_set.all()])
         self.assertIn('chicken', [i.item for i in test_chicken.ingredient_set.all()])
 
+        #test Recipes objects functions
+
+        x = Recipes.objects.all()[0]
+        ingredients = x.ingredients()
+        inst = x.instructions()
+        js = x.returnJson()
+
+        self.assertEqual(ingredients, x.ingredient_set.all()[::-1])
+        self.assertEqual(inst, x.instructions_set.all()[::-1])
+        b = json.loads(js)
+        self.assertIn('title',b)
+        self.assertIn('url',b)
+
 
 class test_outside_helper_functions(TestCase):
     
@@ -135,7 +148,6 @@ class test_add_new_recipes(TestCase):
         request = HttpRequest()
         test_chicken = Recipes.objects.create(title='test chicken')
         response = new_recipe(request, '1')
-
 
 class test_filters_and_database_loader(TestCase):
     def test_load_db_and_test_filters(self):
@@ -207,11 +219,14 @@ class test_filters_and_database_loader(TestCase):
         for i in range(1000):
             x = find_recipes(request3)
             self.assertIn(x,vF)
-       
-        
-        
 
+        #ajax
 
+        request = HttpRequest()
+        z = json.loads(newRecipeAjax(request))
+        self.assertIn('title', z)
+        self.assertIn('url',z)
+        
 
 
 

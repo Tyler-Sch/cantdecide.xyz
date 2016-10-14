@@ -8,6 +8,39 @@
     <title>You Decide</title>
     <link href='/static/bootstrap/css/bootstrap.min.css' rel='stylesheet' >
     <link href='/static/base.css' rel='stylesheet' >
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js'></script>
+   <script>
+        $(document).ready(function(){
+            $("#nope").click(function(){
+                var d = $("#form1").serialize();
+                $.ajax({
+                    url:"../newAjax",
+                    data:d,
+                    type:"GET",
+                    dataType:"json"
+                })
+                .done(function(json){
+                    var pk = json.pk;
+                    savePK(json.pk);
+                    $("#meal_table_head").html("<a href='" + json.url +"' class='col-xs-12'>" + json.title + "</a>");
+                    $("#id_meal_table").html("<tr><td>" + json.yiel + "</td><td>active time: "+ json.active_time + "</td><td>total time: "+ json.total_time +"</td></tr>");
+
+
+                });
+            });
+            
+            $("#testpara").click(function(){
+                $("#testpara").text('hrrmmmm');
+            });
+            var PKey;
+            function savePK(pk){
+                PKey=pk;
+                return;
+            }
+
+
+        });
+   </script>
 </head>
 {% block content %}{% endblock %}
 </html>

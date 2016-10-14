@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .menu_programs import find_recipes, grocery_list
 from .models import Recipes
+
 
 def home(request):
     return render(request, 'youdecide/home.html')
@@ -25,6 +26,11 @@ def new_recipe(request, current):
     return redirect('meals', days="&".join(recipes))
 
 def nah(request, current):
+    pass
+    '''
     recipes = current.split('&')
     recipes[-1] = str(find_recipes(request))
     return redirect('meals', days="&".join(recipes))
+    '''
+def newRecipeAjax(request):
+    return JsonResponse(Recipes.objects.get(pk=find_recipes(request)).returnJson())
