@@ -226,6 +226,8 @@ class test_filters_and_database_loader(TestCase):
         z = json.loads(newRecipeAjax(request))
         self.assertIn('title', z)
         self.assertIn('url',z)
+
+
         
 
 

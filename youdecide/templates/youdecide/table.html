@@ -5,49 +5,50 @@
     <div class="container">
      <form id='form1'class="form">
         <label class="radio-inline">               
-                        <input type='radio' name='restrictions' value='vegan'/>vegan</label>
-                        <label class="radio-inline">
-                        <input type='radio' name='restrictions' value='vegetarian' />vegetarian</label>
-                        <label class="radio-inline">
-                            <input type="radio" name="restrictions" value="everything"/>I'll eat whatever</label>
-                    </form>
+            <input type='radio' name='restrictions' value='vegan'/>vegan
+        </label>
+        <label class="radio-inline">
+            <input type='radio' name='restrictions' value='vegetarian' />vegetarian
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="restrictions" value="everything"/>I'll eat whatever
+        </label>
+     </form>
     </div>
-         
-
     <div class='container text-center'>
         <h3> Having trouble making a choice? How about...</h3>
     </div>
     <div class='container'>
         <div class='jumbotron' style='background-image:url("http://www.seriouseats.com/recipes/assets_c/2015/07/20150716-chicken-fried-chicken-recipe-food-lab-52-thumb-1500xauto-424949.jpg")'>
-        <div class='text-center'>
-            <h1>We Help</h1>
-            <h1>You</h1>
-            <h1>Decide</h1>
-                <div class='container' style="text-align: center">
-                <h3 id='meal_table_head'></h3>
-                 <table id='id_meal_table' class='table table-hover'style='padding-top:30 px'>
-                
-                </table>
-               </div>
-               </div>
-                 <div class='container'>
-                        <div class='row'>
-                            <button class='btn btn-success btn-default col-xs-6' id='yep' value='that sounds nice' name='new'>I'll take it</button>
-                            <button class='btn btn-danger btn-default col-xs-6' id='nope' value='no t.hanks' name='nope'>Something else please</button>
-                        </div>
+            <div class='text-center'>
+                <h1>We Help</h1>
+                <h1>You</h1>
+                <h1>Decide</h1>
+                    <div class='container' style="text-align: center">
+                        <h3 id='meal_table_head'></h3>
+                            <table id='id_meal_table' class='table table-hover'style='padding-top:30 px'>
+                            </table>
+                    </div>
+            </div>
+            <div class='container'>
+                <div class='row'>
+                    <button class='btn btn-success btn-default col-xs-6' id='yep' value='that sounds nice' name='new'>I'll take it</button>
+                    <button class='btn btn-danger btn-default col-xs-6' id='nope' value='no t.hanks' name='nope'>Something else please</button>
+                </div>
           
-            
+            </div>
         </div>
-                       </div>
-    <p id="testpara"> Click me to change text</p>
-    <p id="testing"></p>
-       <div class='container checkbox'>
-    <table class='table'id='grocery_list'>
-        <th>Ingredients</th>
-        {% for i in g_list %}
-        <tr><td><input type='checkbox' value='' />{{ i }}</td></tr>
-        {% endfor %}
-    </table>
+    </div>
+    <div class='container'>
+        <div class='jumbotron'>
+            <table id='thechosenfew' class='table'>
+            </table>
+        </div>
+   
+    </div>
+    <div class='container checkbox'>
+        <table class='table'id='grocery_list'>
+        </table>
     </div>
 </body>
 {% endblock %}

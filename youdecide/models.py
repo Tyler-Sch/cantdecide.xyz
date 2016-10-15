@@ -24,8 +24,17 @@ class Recipes(models.Model):
         '''doesnt actually return json since Djangos new JsonResponse returns it automatically. Instead method returns dict that is easily converted into json'''
 
         toConvert = {'url':self.url, 'title':self.title,'yiel':self.yiel,'active_time':self.active_time,'total_time':self.total_time,'imgUrl':self.imgUrl, 'pk':self.pk}
-        #converted = json.dumps(toConvert)
         return toConvert
+
+    def ingredientsJson(self):
+        ''' again: returns a list of tuples that is easily converted in json
+            in the format [(amount, item, original_txt)]
+        '''
+
+        return [(ingredient.amount, ingredient.item, ingredient.original_txt) for ingredient in self.ingredients()]
+
+
+
 
 class Instructions(models.Model):
     recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE)

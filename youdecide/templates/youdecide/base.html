@@ -9,8 +9,28 @@
     <link href='/static/bootstrap/css/bootstrap.min.css' rel='stylesheet' >
     <link href='/static/base.css' rel='stylesheet' >
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js'></script>
-   <script>
+    <script>
         $(document).ready(function(){
+            var PKeyArray=[];
+            var PKTemp;
+            var recipeObjs=[];
+            var recipeObjTemp={};
+            function savePK(pk){
+                PKTemp=pk;
+                return;
+            }
+            function publishGList(grocery){
+                $("#grocery_list").html(grocery);
+            }
+            function publishChosenRecipes(recipeArray,targetId){
+                var htm = '';
+                $.each(recipeArray, function(){
+                    htm += "<tr><td><a target='_blank' class='col-xs-12' href='" + this.url +"'>"+this.title + "</a></td></tr><tr><td class='col-xs-4'>"+ this.yiel+ 
+                    "</td><td class='col-xs-4'>active time: "+this.activeTime+"</td><td class='col-xs-4'>total time: "+ this.totalTime+ "</td></tr>";
+                });
+                $(targetId).html(htm);
+                
+            }
             $("#nope").click(function(){
                 var d = $("#form1").serialize();
                 $.ajax({
@@ -20,23 +40,36 @@
                     dataType:"json"
                 })
                 .done(function(json){
-                    var pk = json.pk;
+                    recipeObjTemp={'title':json.title,'url':json.url,'yiel':json.yiel,'activeTime':json.active_time,
+                    'totalTime':json.total_time};
                     savePK(json.pk);
-                    $("#meal_table_head").html("<a href='" + json.url +"' class='col-xs-12'>" + json.title + "</a>");
-                    $("#id_meal_table").html("<tr><td>" + json.yiel + "</td><td>active time: "+ json.active_time + "</td><td>total time: "+ json.total_time +"</td></tr>");
-
+                    publishChosenRecipes([recipeObjTemp],'#meal_table_head');
 
                 });
             });
             
-            $("#testpara").click(function(){
-                $("#testpara").text('hrrmmmm');
+            $("#yep").click(function(){
+                PKeyArray.push(PKTemp);
+                recipeObjs.push(recipeObjTemp);
+                $.ajax({
+                    url:"../recipeAjax",
+                    data:'PK=' + PKeyArray.join('&PK='),
+                    type:"GET",
+                    dataType:"json"
+               })
+                .done(function(json){
+                    var gList ='';
+                    var ing =[]; 
+                    for (var i in json){
+                        ing.push(i);
+                    }
+                    for (i=0;i<ing.length;i++){
+                        gList += "<tr><td><input type='checkbox' value=''/></td><td>" + ing[i] + "</td></tr>"; 
+                    } 
+                    publishGList(gList);
+                    publishChosenRecipes(recipeObjs, '#thechosenfew');
+               });
             });
-            var PKey;
-            function savePK(pk){
-                PKey=pk;
-                return;
-            }
 
 
         });

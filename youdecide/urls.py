@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^meals=(?P<current>[0-9&]+)/new_recipe$', views.new_recipe, name='new_recipe'),
     url(r'meals=(?P<current>[0-9&]+)/nah$',views.nah,name='nah'),
     url(r'^newAjax$',views.newRecipeAjax,name='newRecipeAjax'),
+    url(r'^recipeAjax$', views.recipeAjax, name='recipeAjax'),
     url(r'^new$', views.new, name='new'),
 ]

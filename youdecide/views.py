@@ -17,6 +17,8 @@ def new(request):
     return redirect('meals',days=str(find_recipes(request)))
 
 def new_recipe(request, current):
+    pass
+    '''
     param = request.GET.dict()
     recipes = current.split('&')
     if 'nope' in param:
@@ -24,6 +26,7 @@ def new_recipe(request, current):
     else:
         recipes.append(str(find_recipes(request)))
     return redirect('meals', days="&".join(recipes))
+    '''
 
 def nah(request, current):
     pass
@@ -34,3 +37,18 @@ def nah(request, current):
     '''
 def newRecipeAjax(request):
     return JsonResponse(Recipes.objects.get(pk=find_recipes(request)).returnJson())
+
+def recipeAjax(request):
+    xpk = request.GET.getlist('PK')
+    ingredients = {}
+    discard = set(['&nbsp','kosher salt and ground black pepper','kosher salt and freshly ground black pepper','ground pepper','ground black pepper','kosher salt', 'water','salt','pepper', 'salt and pepper', 'salt and black pepper'])
+    for i in xpk:
+        recipe = Recipes.objects.get(pk=i).ingredients()
+        for it in recipe:
+            if it.item not in discard:
+                try:
+                    ingredients[it.item].append(it.amount)
+                except KeyError:
+                    ingredients[it.item] = [it.amount]
+
+    return JsonResponse(ingredients)
