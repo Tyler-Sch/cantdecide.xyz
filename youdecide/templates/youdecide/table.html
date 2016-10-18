@@ -65,7 +65,6 @@
                     $.each(json, function(){
                        recipeObjs.push(this);
                     })
-                    alert(recipeObjs.length);
                     publishChosenRecipes(recipeObjs, "#thechosenfew");
                     loader();
                     
@@ -96,6 +95,7 @@
                 PKeyArray.push(PKTemp);
                 recipeObjs.push(recipeObjTemp);
                 loader();
+                history.pushState({'foo':"bar"}, 'blah',"?PK="+PKeyArray.join("&PK="));
                
             });
 
