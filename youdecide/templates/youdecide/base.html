@@ -19,14 +19,22 @@
                 PKTemp=pk;
                 return;
             }
-            function publishGList(grocery){
-                $("#grocery_list").html(grocery);
+            function publishGList(json){
+                var gList ='';
+                var ing =[]; 
+                for (var i in json){
+                    ing.push(i);
+                }
+                for (i=0;i<ing.length;i++){
+                    gList += "<tr><td><input type='checkbox' value=''/></td><td>" + ing[i] + "</td></tr>"; 
+                    } 
+                $("#grocery_list").html(gList);
             }
             function publishChosenRecipes(recipeArray,targetId){
                 var htm = '';
                 $.each(recipeArray, function(){
-                    htm += "<tr><td><a target='_blank' class='col-xs-12' href='" + this.url +"'>"+this.title + "</a></td></tr><tr><td class='col-xs-4'>"+ this.yiel+ 
-                    "</td><td class='col-xs-4'>active time: "+this.activeTime+"</td><td class='col-xs-4'>total time: "+ this.totalTime+ "</td></tr>";
+                    htm += "<div class='container-fluid'><div class='row'><div class='col-xs-12'><a target='_blank' class='text-center' href='" + this.url +"'><p>"+this.title + "</p></a></div></div><div class='row'><div class='col-xs-4'><p>"+ this.yiel+ 
+                    "</p></div><div class='col-xs-4'><p>active time: "+this.activeTime+"</p></div><div class='col-xs-4'><p>total time: "+ this.totalTime+ "</p></div></div></div>";
                 });
                 $(targetId).html(htm);
                 
@@ -58,15 +66,7 @@
                     dataType:"json"
                })
                 .done(function(json){
-                    var gList ='';
-                    var ing =[]; 
-                    for (var i in json){
-                        ing.push(i);
-                    }
-                    for (i=0;i<ing.length;i++){
-                        gList += "<tr><td><input type='checkbox' value=''/></td><td>" + ing[i] + "</td></tr>"; 
-                    } 
-                    publishGList(gList);
+                    publishGList(json);
                     publishChosenRecipes(recipeObjs, '#thechosenfew');
                });
             });

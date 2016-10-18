@@ -1,6 +1,108 @@
-{% extends 'youdecide/base.html' %}
+<!DOCTYPE html>
+<html lang='en'>
 
-{% block content %}
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>You Decide</title>
+    <link href='/static/bootstrap/css/bootstrap.min.css' rel='stylesheet' >
+    <link href='/static/base.css' rel='stylesheet' >
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js'></script>
+    <script>
+        $(document).ready(function(){
+            var PKeyArray=[{{ pk }}];
+            var PKTemp;
+            var recipeObjs=[];
+            var recipeObjTemp={};
+            function savePK(pk){
+                PKTemp=pk;
+                return;
+            }
+            function publishGList(json){
+                var gList ='';
+                var ing =[]; 
+                for (var i in json){
+                    ing.push(i);
+                }
+                for (i=0;i<ing.length;i++){
+                    gList += "<tr><td><input type='checkbox' value=''/></td><td>" + ing[i] + "</td></tr>"; 
+                    } 
+                $("#grocery_list").html(gList);
+            }
+            function publishChosenRecipes(recipeArray,targetId){
+                var htm = '';
+                $.each(recipeArray, function(){
+                    htm += "<div class='container-fluid'><div class='row'><div class='col-xs-12'><a target='_blank' class='text-center' href='" + this.url +"'><p>"+this.title + "</p></a></div></div><div class='row'><div class='col-xs-4'><p>"+ this.yiel+ 
+                    "</p></div><div class='col-xs-4'><p>active time: "+this.active_time+"</p></div><div class='col-xs-4'><p>total time: "+ this.total_time+ "</p></div></div></div>";
+                });
+                $(targetId).html(htm);
+                
+            }
+            function loader(){
+                $.ajax({
+                    url:"../recipeAjax",
+                    data:'PK=' + PKeyArray.join('&PK='),
+                    type:"GET",
+                    dataType:"json"
+                })
+                .done(function(json){
+                    publishGList(json);
+                    publishChosenRecipes(recipeObjs, '#thechosenfew');
+                });   
+            
+            
+            }
+            function loadSavedRecipes(){
+                $.ajax({
+                    url:"../lookUpByPk",
+                    data:"PK=" +PKeyArray.join("&PK="),
+                    type:"GET",
+                    dataType:"json",
+                })
+                .done(function(json){
+                    console.log(json);
+                    $.each(json, function(){
+                       recipeObjs.push(this);
+                    })
+                    alert(recipeObjs.length);
+                    publishChosenRecipes(recipeObjs, "#thechosenfew");
+                    loader();
+                    
+                });
+                
+
+            
+            }
+            loadSavedRecipes();
+            $("#nope").click(function(){
+                var d = $("#form1").serialize();
+                $.ajax({
+                    url:"../newAjax",
+                    data:d,
+                    type:"GET",
+                    dataType:"json"
+                })
+                .done(function(json){
+                    recipeObjTemp={'title':json.title,'url':json.url,'yiel':json.yiel,'active_time':json.active_time,
+                    'total_time':json.total_time};
+                    savePK(json.pk);
+                    publishChosenRecipes([recipeObjTemp],'#meal_table_head');
+
+                });
+            });
+            
+            $("#yep").click(function(){
+                PKeyArray.push(PKTemp);
+                recipeObjs.push(recipeObjTemp);
+                loader();
+               
+            });
+
+
+        });
+   </script>
+</head>
 <body>
     <div class="container">
      <form id='form1'class="form">
@@ -26,24 +128,24 @@
                 <h1>Decide</h1>
                     <div class='container' style="text-align: center">
                         <h3 id='meal_table_head'></h3>
-                            <table id='id_meal_table' class='table table-hover'style='padding-top:30 px'>
-                            </table>
+                            <div id='id_meal_table' style='padding-top:30 px'>
+                            </div>
                     </div>
             </div>
             <div class='container'>
                 <div class='row'>
-                    <button class='btn btn-success btn-default col-xs-6' id='yep' value='that sounds nice' name='new'>I'll take it</button>
-                    <button class='btn btn-danger btn-default col-xs-6' id='nope' value='no t.hanks' name='nope'>Something else please</button>
+                    <button class='btn btn-success btn-default col-xs-6' id='yep' value='that sounds nice' name='new'>add it to my grocery list</button>
+                    <button class='btn btn-danger btn-default col-xs-6' id='nope' value='no t.hanks' name='nope'>Next Recipe!</button>
                 </div>
           
             </div>
         </div>
     </div>
     <div class='container'>
-        <div class='jumbotron'>
-            <table id='thechosenfew' class='table'>
-            </table>
-        </div>
+        <blockquote>
+            <div id='thechosenfew'>
+            </div>
+        </blockquote>
    
     </div>
     <div class='container checkbox'>
@@ -51,4 +153,4 @@
         </table>
     </div>
 </body>
-{% endblock %}
+</html>
