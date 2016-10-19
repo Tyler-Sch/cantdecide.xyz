@@ -14,28 +14,7 @@ def meals(request,days=0):
 
     return render(request, 'youdecide/table.html',{'pk':pk1 }) if list_ else render(request,'youdecide/table.html')
     
-def new(request):
-    return redirect('meals',days=str(find_recipes(request)))
 
-def new_recipe(request, current):
-    pass
-    '''
-    param = request.GET.dict()
-    recipes = current.split('&')
-    if 'nope' in param:
-        recipes[-1] = str(find_recipes(request))
-    else:
-        recipes.append(str(find_recipes(request)))
-    return redirect('meals', days="&".join(recipes))
-    '''
-
-def nah(request, current):
-    pass
-    '''
-    recipes = current.split('&')
-    recipes[-1] = str(find_recipes(request))
-    return redirect('meals', days="&".join(recipes))
-    '''
 def newRecipeAjax(request):
     return JsonResponse(Recipes.objects.get(pk=find_recipes(request)).returnJson())
 
