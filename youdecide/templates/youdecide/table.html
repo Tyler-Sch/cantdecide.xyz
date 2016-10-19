@@ -15,6 +15,7 @@
             var PKTemp;
             var recipeObjs=[];
             var recipeObjTemp={};
+            $("#remove").hide();
             function savePK(pk){
                 PKTemp=pk;
                 return;
@@ -67,6 +68,7 @@
                     })
                     publishChosenRecipes(recipeObjs, "#thechosenfew");
                     loader();
+                    $("#remove").show();
                     
                 });
                 
@@ -96,6 +98,7 @@
                 recipeObjs.push(recipeObjTemp);
                 loader();
                 history.pushState({'foo':"bar"}, 'blah',"?PK="+PKeyArray.join("&PK="));
+                $("#remove").show();
                
             });
 
@@ -146,6 +149,9 @@
             <div id='thechosenfew'>
             </div>
         </blockquote>
+        <form action='../meals'>
+            <button class='btn btn-danger btn-default col-xs-12' id='remove' value='removeRecipes'>remove current recipes</button>
+        </form>
    
     </div>
     <div class='container checkbox'>
