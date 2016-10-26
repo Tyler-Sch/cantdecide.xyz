@@ -27,7 +27,7 @@
                     ing.push(i);
                 }
                 for (i=0;i<ing.length;i++){
-                    gList += "<tr><td><input type='checkbox' value=''/></td><td>" + ing[i] + "</td></tr>"; 
+                    gList += "<tr><td><input type='checkbox' value=''/></td><td>" +json[ing[i]]+" "+ ing[i] + "</td></tr>"; 
                     } 
                 $("#grocery_list").html(gList);
             }
