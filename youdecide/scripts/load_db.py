@@ -1,6 +1,7 @@
-from .models import Recipes, Instructions, Ingredient
-from .menu_programs import extractIngredient
+from youdecide.models import Recipes, Instructions, Ingredient
 import re
+from youdecide.scripts.helpload import translateIngredients
+import json
 
 def convert_time_to_min(time_string):
     '''
@@ -62,6 +63,12 @@ def extract_yield(y_string):
     
 
 
+def deletePara(ingredients):
+    '''
+        removes text between parentheises
+    '''
+    dead_parrot = re.compile(r'\(.*?\)')
+    return [re.sub(dead_parrot,'',i) for i in ingredients]
 
 def load_database(recipeList):
     
@@ -103,16 +110,26 @@ def load_database(recipeList):
             new_item.instructions_set.create(step=st)
         assert(len(recipe['instructions']) == new_item.instructions_set.count())
 
+        converted_list = translateIngredients(deletePara(recipe['ingredients'])) 
+        try:
+            assert(len(converted_list)==len(recipe['ingredients']))
+        except AssertionError:
+            f = open('recipes/apps/{}errorLog.txt'.format(recipe['title'][:50]),'w')
+            f.write(json.dumps(converted_list))
+            f.close()
+            continue
+            
 
-        converted_list = extractIngredient(recipe['ingredients'])
-        assert(len(converted_list)==len(recipe['ingredients']))
+        for i in converted_list:
+            name = i['name'] 
+            qty = i['qty'] 
+            unit = i['unit'] 
+            comment = i['comment'] 
+            other = i['other'] 
 
-        for i in range(len(recipe['ingredients'])):
-            new_ingredient = new_item.ingredient_set.create(item = converted_list[i][1], amount = converted_list[i][0],
-                original_txt = recipe['ingredients'][i])
+            new_ingredient = new_item.ingredient_set.create(item =name,qty=qty,unit=unit,original_txt=i['input'],display=i['display'], comment=comment, other=other) 
 
         
-
 
 
 

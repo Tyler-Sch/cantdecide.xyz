@@ -1,0 +1,42 @@
+{% extends 'youdecide/base.html' %}
+
+{% block content %}
+<body> 
+    <div class='container text-center'>
+        <h3> Having trouble making a choice? How about...</h3>
+    </div>
+    <div class='container'>
+        <div class='jumbotron' style='background-image:url("http://www.seriouseats.com/recipes/assets_c/2015/07/20150716-chicken-fried-chicken-recipe-food-lab-52-thumb-1500xauto-424949.jpg")'>
+        <div class='text-center'>
+            <h1>We Help</h1>
+            <h1>You</h1>
+            <h1>Decide</h1>
+                <div class='container'>
+                 <table id='id_meal_table' class='table table-hover'style='padding-top:30 px'>
+                {% for item in names %}
+                <tr class='recipe'><td><a href="{{ item.url }}" target="_blank">{{ item.title }}</a></td><td>active time: {{ item.active_time }} </td><td>total time: {{ item.total_time }}</td><td>{{ item.yiel }}</td></tr>
+
+                {% endfor %}
+                </table>
+               </div>
+               </div>
+            <div class='container'>
+                <div>
+                    <a href='new_recipe' class='btn btn-success btn-default col-xs-6' id='yep' role='button'>mmm...That Sounds Nice</a>
+                    
+                    <a href='nah' id='nah'class='btn btn-danger btn-default col-xs-6' role='button'>Maybe Something Else</a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+       <div class='container checkbox'>
+    <table class='table'id='grocery_list'>
+        <th>Ingredients</th>
+        {% for i in g_list %}
+        <tr><td><input type='checkbox' value='' />{{ i }}</td></tr>
+        {% endfor %}
+    </table>
+    </div>
+</body>
+{% endblock %}

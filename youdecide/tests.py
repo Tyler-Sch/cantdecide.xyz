@@ -1,11 +1,11 @@
 from django.test import TestCase,LiveServerTestCase
 from django.core.urlresolvers import resolve
-from .views import home, meals,newRecipeAjax
+from youdecide.views import home, meals,newRecipeAjax
 from django.http import HttpRequest, QueryDict
 from django.template.loader import render_to_string
-from .models import Recipes, Ingredient, Instructions 
-from .load_db import convert_time_to_min, load_database
-from .menu_programs import find_recipes
+from youdecide.models import Recipes, Ingredient, Instructions 
+from youdecide.scripts.load_db import convert_time_to_min, load_database
+from youdecide.menu_programs import find_recipes
 import json
 import os
 import random
@@ -41,8 +41,8 @@ class Test_data_base_entries(TestCase):
         #test_ingredient_list = Ingredient_list.objects.create(recipe=test_chicken)
         #self.assertIn(test_ingredient_list, test_chicken.ingredient_list_set.all())
 
-        test_ingredient1 = Ingredient.objects.create(item='chicken', amount='1 bird', original_txt='1 bird of the most glorious chicken you have ever seen.',recipe= test_chicken)
-        test_ingredient2 = Ingredient.objects.create(item='butter', amount='1 stick', original_txt='1 stick of the sickest butter', recipe=test_chicken)
+        test_ingredient1 = Ingredient.objects.create(item='chicken', comment='1 bird', original_txt='1 bird of the most glorious chicken you have ever seen.',recipe= test_chicken)
+        test_ingredient2 = Ingredient.objects.create(item='butter', comment='1 stick', original_txt='1 stick of the sickest butter', recipe=test_chicken)
 
         self.assertEqual(2, Ingredient.objects.count())
         self.assertIn(test_ingredient1, test_chicken.ingredient_set.all())

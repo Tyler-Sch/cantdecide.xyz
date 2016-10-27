@@ -18,6 +18,14 @@ def translateIngredients(ingredients):
     ingredientList = json.loads(f.read())
     f.close()
     os.remove('recipes/temp/ingredientsEnd.json')
+    
+    fieldSet = set(['name','comment','other','display','qty','unit'])
+
+    for i in ingredientList:
+        for z in fieldSet:
+            if z not in i:
+                i[z] =''
+           
     return ingredientList
 
 

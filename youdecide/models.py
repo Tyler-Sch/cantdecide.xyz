@@ -31,7 +31,7 @@ class Recipes(models.Model):
             in the format [(amount, item, original_txt)]
         '''
 
-        return [(ingredient.amount, ingredient.item, ingredient.original_txt) for ingredient in self.ingredients()]
+        return [(ingredient.qty +' '+ ingredients.unit, ingredient.item, ingredient.original_txt) for ingredient in self.ingredients()]
 
 
 
@@ -43,9 +43,13 @@ class Instructions(models.Model):
         return self.step
 
 class Ingredient(models.Model):
-    item = models.CharField(max_length=100, default='')
-    amount = models.CharField(max_length=100, default='')
+    item = models.CharField(max_length=200, default='')
+    qty = models.CharField(max_length=100,default='')
+    unit = models.CharField(max_length=100, default='')
     original_txt = models.TextField(default='')
     recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE)
+    display = models.TextField(default='')
+    other = models.CharField(max_length=200, default='')
+    comment = models.TextField(default='')
     def __str__(self):
         return self.item
