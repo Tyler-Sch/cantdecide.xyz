@@ -68,6 +68,8 @@ def deletePara(ingredients):
         removes text between parentheises
     '''
     dead_parrot = re.compile(r'\(.*?\)')
+    saveurSlash = re.compile(r'⁄')
+    ingredients = [re.sub(saveurSlash,'/',i) for i in ingredients]
     return [re.sub(dead_parrot,'',i) for i in ingredients]
 
 def load_database(recipeList):
@@ -128,16 +130,4 @@ def load_database(recipeList):
             other = i['other'] 
 
             new_ingredient = new_item.ingredient_set.create(item =name,qty=qty,unit=unit,original_txt=i['input'],display=i['display'], comment=comment, other=other) 
-
-        
-
-
-
-
-
-
-
-
-   
-
 

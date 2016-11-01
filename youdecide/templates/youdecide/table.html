@@ -51,8 +51,6 @@
                     publishGList(json);
                     publishChosenRecipes(recipeObjs, '#thechosenfew');
                 });   
-            
-            
             }
             function loadSavedRecipes(){
                 $.ajax({
@@ -71,9 +69,6 @@
                     $("#remove").show();
                     
                 });
-                
-
-            
             }
             loadSavedRecipes();
             $("#nope").click(function(){
