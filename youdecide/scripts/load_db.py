@@ -92,16 +92,16 @@ def load_database(recipeList):
         t = recipe['title']
         u = recipe['url']
         y = recipe['yiel'] if recipe['yiel']  != 99 else 'error'
-        at = recipe['active_time'] if recipe['active_time']  != 999 else 'Please see recipe'
+        #at = recipe['active_time'] if recipe['active_time']  != 999 else 'Please see recipe'
         tt = recipe['total_time'] if recipe['total_time']  != 999 else 'Please see recipe'
         try:
-            imageUrl = recipe['picture_url']
+            imageUrl = recipe['picture_url'] if recipe['picture_url']  else ''
         except KeyError:
             imageUrl = ''
         #plus = '+' if 'plus' in recipe['active_time'] else ''
 
         try:
-            new_item=Recipes.objects.create(title=t, url=u, yiel=y, active_time=at, total_time=tt, time_plus='',imgUrl=imageUrl)
+            new_item=Recipes.objects.create(title=t, url=u, yiel=y,total_time=tt, time_plus='',imgUrl=imageUrl)
         except AttributeError:
             f = open('errorrecipelog.json','a')
             f.write(json.dumps(recipe))
