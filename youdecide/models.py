@@ -31,7 +31,7 @@ class Recipes(models.Model):
             in the format [(amount, item, original_txt)]
         '''
 
-        return [(ingredient.qty +' '+ ingredients.unit, ingredient.item, ingredient.original_txt) for ingredient in self.ingredients()]
+        return [(ingredient.item, ingredient.display) for ingredient in self.ingredients()]
 
 
 

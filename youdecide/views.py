@@ -32,7 +32,7 @@ def helperGlist(request):
     for i in xpk:
         recipe = Recipes.objects.get(pk=i).ingredients()
         for it in recipe:
-            amount = it.qty  + ' '+ it.unit
+            display = it.original_txt
             if it.item:
                 item = it.item
             else:
@@ -40,9 +40,9 @@ def helperGlist(request):
 
             if item.lower() not in discard:
                 try:
-                    ingredients[item.lower()].append(amount)
+                    ingredients[item.lower()] += '<br>'+ display
                 except KeyError:
-                    ingredients[item.lower()] = [amount]
+                    ingredients[item.lower()] = display
     return ingredients
 
 
