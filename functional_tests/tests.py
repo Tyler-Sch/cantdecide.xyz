@@ -1,23 +1,23 @@
 from selenium import webdriver
 import unittest
 from selenium .webdriver.common.keys import Keys
-from django.test import LiveServerTestCase
+from django.test import TestCase
 from youdecide.models import Recipes, Ingredient
+from youdecide.scripts.load_db import load_database
+import json
 
 
-class NewVisitor(LiveServerTestCase):
+class NewVisitor(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        f = open('recipes/mains/testRecipes.json','r')
+        x = json.loads(f.read())
+        f.close()
+        load_database(x)
+        
 
     def setUp(self):
         self.browser = webdriver.Firefox()
-        Chicken=Recipes.objects.create(title='chicken')
-        Chicken.ingredient_set.create(item='chicken parts')
-        Beef = Recipes.objects.create(title='Beef')
-        Beef.ingredient_set.create(item='Beef parts')
-        stuff = Recipes.objects.create(title='stuff')
-        stuff.ingredient_set.create(item='mmm')
-        moreStuff = Recipes.objects.create(title='more Stuff')
-        moreStuff.ingredient_set.create(item='yuck')
-  
 
         self.browser.implicitly_wait(3)
        
@@ -25,7 +25,7 @@ class NewVisitor(LiveServerTestCase):
         self.browser.quit()
 
     def test_is_you_decide_in_title(self):
-        self.browser.get('http://cantdecide.xyz/youdecide')
+        self.browser.get('http://localhost:8000/youdecide/meals')
 
         self.assertIn('You Decide', self.browser.title)
 

@@ -83,7 +83,7 @@ def load_database(recipeList):
         'active_time'
         'total_time'
         list of ingredients. Use helper function to extract the import parts
-        #TODO Add image url
+        image url
         list of instructions
     '''
     
