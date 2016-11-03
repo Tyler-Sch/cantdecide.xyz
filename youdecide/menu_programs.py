@@ -13,7 +13,7 @@ def find_recipes(request):
     '''
     filterDict = request.GET.getlist('restrictions')
     if not filterDict: 
-        x = random.choice(Recipes.objects.all())
+        x = random.choice([x for x in range(9000)])
     else:
         option_set = set((i.pk for i in Recipes.objects.all()))
         options = os.listdir('youdecide/searches/searchFiles')
@@ -26,7 +26,7 @@ def find_recipes(request):
         return random.sample(option_set,1)[0] if option_set else 0
                 
         
-    return x.pk
+    return x
 
 
 def grocery_list(listOfItems):
