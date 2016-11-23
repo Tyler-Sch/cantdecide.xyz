@@ -21,7 +21,6 @@
                 return;
             }
 
-            // -----00000000------
             //html modifying functions
 
             function publishGList(json){
@@ -42,14 +41,13 @@
                 //organizes chart of chosen recipes. Full row: Title \ row divided by 3:[ active time, yield, and total Time]
                 var htm = '';
                 $.each(recipeArray, function(){
-                    htm += "<div class='container-fluid'><div class='row'><div class='col-xs-12'><a target='_blank' class='text-center' href='" + this.url +"'><p>"+this.title + "</p></a></div></div><div class='row'><div class='col-xs-6 text-center'><p>"+ this.yiel+ 
+                    htm += "<div class='container-fluid'><div class='row'><div class='col-xs-12'><a target='_blank' class='text-center' id='mainDisplay' href='" + this.url +"'><p>"+this.title + "</p></a></div></div><div class='row'><div class='col-xs-6 text-center'><p>"+ this.yiel+ 
                     "</p></div><div class='col-xs-6 text-center'><p>total time: "+ this.total_time+ "</p></div></div></div>";
                 });
                 $(targetId).html(htm);
                 
             }
 
-            //------=======+++++++++=========--------
             //ajax functions
 
             function loader(){
@@ -90,7 +88,6 @@
 
             loadSavedRecipes();
 
-            //----------===========++++++++======------
             //event listener and ajax
             $("#nope").click(function(){
                 //loads new recipe. Takes info in restriction form, gets another recipe object
@@ -110,7 +107,6 @@
                 });
             });
 
-            // ----------==========++++++++++++=============------------
             //evenet listeners
             
             $("#yep").click(function(){

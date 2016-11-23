@@ -29,24 +29,44 @@ class NewVisitor(TestCase):
 
         self.assertIn('You Decide', self.browser.title)
 
-        self.browser.find_element_by_id('days').click()
+        #test next recipe button loads another recipe.
+        recipeTargets =[]
+        for i in range(3):
+            self.clickNope()
+            recipeTargets.append(self.browser.find_element_by_id('mainDisplay').text)
 
-        self.assertIn('You Decide', self.browser.title)
-        table = self.browser.find_elements_by_class_name('recipe')
-        assert(len(table)>=1)
+        assert(recipeTargets[0] != recipeTargets[1])
+        assert(recipeTargets[1] != recipeTargets[2])
 
-        currentItem=self.browser.find_element_by_id('id_meal_table').text
-        self.browser.find_element_by_id('nah').click()
-        new_item = self.browser.find_element_by_id('id_meal_table').text
+        #test yep button adds recipe titles, groceries, and changes html
+        previousUrl = self.browser.current_url
+        self.clickYep()
+        newUrl = self.browser.current_url
 
-        self.browser.find_element_by_id('yep').click()
+        assert(previousUrl != newUrl)
 
-        self.assertNotEqual(currentItem, new_item)
-        assert(len(self.browser.find_elements_by_class_name('recipe'))>1)
-        print('made it this far')
+        self.clickNope()
+        self.clickYep()
+        assert(newUrl != self.browser.current_url)
 
-        self.browser.find_element_by_id('vegan_box').click()
+        ingredients = self.browser.find_element_by_id('grocery_list').text
+        assert(len(ingredients.split()) > 1)
+
+    def test_grocery_list_different(self):
+        self.browser.get('http://localhost:8000/youdecide/meals')
+        ingredients = []
+        for i in range(2):
+            self.clickNope()
+            self.clickYep()
+            ingredients.append(self.browser.find_element_by_id('grocery_list').text)
+        assert(len(ingredients[0]) != len(ingredients[1]))
         
-    
 
 
+
+
+    def clickNope(self):
+        self.browser.find_element_by_id('nope').click()
+
+    def clickYep(self):
+        self.browser.find_element_by_id('yep').click()

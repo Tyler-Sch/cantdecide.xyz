@@ -145,7 +145,7 @@ class test_main_recipe_page(TestCase):
 '''
 class test_filters_and_database_loader(TestCase):
     def test_load_db_and_test_filters(self):
-        f=open('recipes/mains/items.json','r')
+        f=open('recipes/mains/testRecipes.json','r')
         testRecipe = json.loads(f.read())
         f.close()
         load_database(testRecipe)
@@ -196,18 +196,18 @@ class test_filters_and_database_loader(TestCase):
         
         #test Find Recipes
 
-        for i in range(1000):
+        for i in range(10):
             x = find_recipes(request1)
             self.assertIn(x, vF)
 
-        for i in range(1000):
+        for i in range(10):
             x = find_recipes(request2)
             self.assertIn(x,veg)
 
         request3 = HttpRequest()
         request3.GET = QueryDict('restrictions=vegan1&restictions=vegetarian1')
        
-        for i in range(1000):
+        for i in range(10):
             x = find_recipes(request3)
             self.assertIn(x,vF)
 

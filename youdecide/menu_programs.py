@@ -13,9 +13,9 @@ def find_recipes(request):
     '''
     filterDict = request.GET.getlist('restrictions')
     if not filterDict: 
-        x = random.choice([x for x in range(9000)])
+        x = random.randint(1,9400)
     else:
-        option_set = set((i.pk for i in Recipes.objects.all()))
+        option_set = set(i for i in range(1,9400))
         options = os.listdir('youdecide/searches/searchFiles')
         for i in filterDict:
             if ''.join([i,'.json']) in options:
