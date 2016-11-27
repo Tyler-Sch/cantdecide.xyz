@@ -4,7 +4,7 @@ from youdecide.views import home, meals,newRecipeAjax, lookUpByPk
 from django.http import HttpRequest, QueryDict
 from django.template.loader import render_to_string
 from youdecide.models import Recipes, Ingredient, Instructions 
-from youdecide.scripts.load_db import convert_time_to_min, load_database
+from youdecide.scripts.load_db import load_database
 from youdecide.menu_programs import find_recipes
 import json
 import os
@@ -33,8 +33,8 @@ class Test_data_base_entries(TestCase):
             )
         self.assertEqual(Recipes.objects.first().title,'Simple Roast Chicken')
         test_instuction1 = Instructions.objects.create(recipe=test_chicken, 
-            step = 'Go to store, find the most beautiful chicken you have ever', \ 
-            'seen, buy it.'
+            step = 'Go to store, find the most beautiful chicken you have ever \
+            seen, buy it.'
             )
         test_instruction2 = Instructions.objects.create(recipe=Recipes.objects.get(title='Simple Roast Chicken'), step='Take the chicken out of packaging. Preheat the oven to 325. Caress.')
         test_instruction3 = Instructions.objects.create(recipe=Recipes.objects.first(), step='cook that chicken right')
@@ -54,7 +54,7 @@ class Test_data_base_entries(TestCase):
 
 class test_outside_helper_functions(TestCase):
     def test_load_database(self):
-        f=open('recipes/mains/testRecipes.json','r')
+        f=open('recipes/mains/test/testRecipes.json','r')
         testRecipe = json.loads(f.read())
         f.close()
         load_database(testRecipe)
@@ -72,19 +72,6 @@ class test_outside_helper_functions(TestCase):
         if len(testRecipe) > 1:
             self.assertNotEqual(Recipes.objects.first().ingredient_set.all(), 
                 Recipes.objects.last().ingredient_set.all())
-
-    def test_convert_time_to_min(self):
-        x = convert_time_to_min('1 hour')
-        self.assertEqual(x, 60)
-        self.assertEqual(0, convert_time_to_min('0 minutes'))
-        self.assertEqual(0, convert_time_to_min('0 min'))
-        self.assertEqual(30, convert_time_to_min('30 minutes'))
-        self.assertEqual(1440, convert_time_to_min('24 hours'))
-        self.assertEqual(180, convert_time_to_min('3 hours'))
-        self.assertEqual(150, convert_time_to_min('2 hours 30 minutes'))
-        self.assertEqual(90, convert_time_to_min('1 1/2 hours'))
-        self.assertEqual(15, convert_time_to_min('15 min'))
-        self.assertEqual(120, convert_time_to_min('1 to 2 hours'))
 
 class test_main_recipe_page(TestCase):
 
