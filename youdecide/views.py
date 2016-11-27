@@ -7,7 +7,7 @@ from .models import Recipes
 def home(request):
     return render(request, 'youdecide/home.html')
 
-def meals(request,days=0):
+def meals(request, days=0):
     list_ = request.GET.getlist('PK')
     if list_:
         pk1=",".join(str(x) for x in request.GET.getlist('PK'))

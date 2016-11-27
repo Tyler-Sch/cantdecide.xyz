@@ -11,11 +11,12 @@ def find_recipes(request):
         returns a random recipe that matches the parameters
         
     '''
+    ####!!!! MODIFY THAT RANDOM RANGE BEFORE PRODUCTION !!!!#####
     filterDict = request.GET.getlist('restrictions')
     if not filterDict: 
-        x = random.randint(1,9400)
+        x = random.randint(1,15)
     else:
-        option_set = set(i for i in range(1,9400))
+        option_set = set(i for i in range(1,15))
         options = os.listdir('youdecide/searches/searchFiles')
         for i in filterDict:
             if ''.join([i,'.json']) in options:
