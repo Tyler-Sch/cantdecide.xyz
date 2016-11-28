@@ -1,6 +1,6 @@
 from django.test import TestCase,LiveServerTestCase
 from django.core.urlresolvers import resolve
-from youdecide.views import home, meals,newRecipeAjax, lookUpByPk
+from youdecide.views import home, meals,newRecipeAjax, lookUpByPk,recipeAjax
 from django.http import HttpRequest, QueryDict
 from django.template.loader import render_to_string
 from youdecide.models import Recipes, Ingredient, Instructions 
@@ -53,6 +53,8 @@ class Test_data_base_entries(TestCase):
 
 
 class test_outside_helper_functions(TestCase):
+
+
     def test_load_database(self):
         f=open('recipes/mains/test/testRecipes.json','r')
         testRecipe = json.loads(f.read())
@@ -73,35 +75,97 @@ class test_outside_helper_functions(TestCase):
             self.assertNotEqual(Recipes.objects.first().ingredient_set.all(), 
                 Recipes.objects.last().ingredient_set.all())
 
-class test_main_recipe_page(TestCase):
 
-    def test_main_recipe_page_loads(self):
-        test_chicken = Recipes.objects.create(title='test chicken', yiel ='3', active_time='60', total_time='100')
+    def test_find_recipes_function(self):
+        recipePKSet = set()
         request = HttpRequest()
-        request.GET = QueryDict('PK='+ str(test_chicken.pk))
-        response = meals(request)
+        for _ in range(100):
+            recipePKSet.add(find_recipes(request))
 
-        #self.assertIn('test chicken', response.content.decode())
+        assert(len(recipePKSet) > 15)
+        request.GET = QueryDict('restrictions=vegan')
+        f = open('youdecide/searches/searchFiles/vegan.json','r')
+        restrictions = json.loads(f.read())
+        f.close()
 
-        test_beef=Recipes.objects.create(title='test beef', yiel = '3',active_time='60', total_time='100')
-        request = HttpRequest()
-        request.GET=QueryDict('PK=' + str(test_beef.pk))
+        for _ in range(100):
+            self.assertIn(find_recipes(request), restrictions)
+            
 
-        response = meals(request)
 
-        #self.assertNotIn('test_chicken', response.content.decode())
-        #self.assertIn('test beef', response.content.decode())
 
-        request = HttpRequest()
-        request.GET=QueryDict('PK='+str(test_beef.pk) + "&PK=" + str(test_chicken.pk))
-        response = lookUpByPk(request)
-        print(response)
+class test_views(TestCase):
+    fixtures = ['testRecipes']
+    requests = {}
+    for i in range(3):
+        requests['request{}'.format(i)] = HttpRequest()
+    randomNumber = random.randint(1,25)
+    randomNumber2 = random.randint(1,25)
+    requests['request2'].GET = QueryDict('PK={}&PK={}'.format(randomNumber, randomNumber2))
+    requests['request1'].GET = QueryDict('PK={}'.format(randomNumber))
 
-        #self.assertIn('test chicken', response.content.decode())
-        #self.assertIn('test beef', response.content.decode())
+    def test_meals(self):
+        assert(len(Recipes.objects.all()) > 20)
+        response = meals(self.requests['request1'])
+        self.assertIn("thechosenfew", str(response.content))
+        self.assertIn('grocery_list', str(response.content))
+        self.assertIn("yep", str(response.content))
+        response = meals(self.requests['request2'])
+        self.assertIn('PKeyArray=[{},{}]'.format(self.randomNumber, self.randomNumber2), str(response.content))
 
+    def test_newRecipeAjax(self):
+        attrs = ['pk','yiel','imgUrl','title','url']
+        responseSet = set()
+        for _ in range(5):
+            response = str(newRecipeAjax(self.requests['request0']).content)
+            for i in attrs:
+                self.assertIn(i, response)
+            responseSet.add(response)
+        #yes, 2 is an arbitrary value
+        assert(len(responseSet) > 2)
+
+    def test_recipeAjax(self):
+        #function gets PK and returns grocery list
+        response = str(recipeAjax(self.requests['request1']).content)
+        ingredients1 = [i.item for i in Recipes.objects.all()[self.randomNumber - 1].ingredients()]
+        count = 0
+        #count accounts for ingredients that get filtered out of view by python. ie black pepper/ water 
+        # dont need to be seen on the view
+        for i in ingredients1:
+            try:
+                self.assertIn(i, response)
+            except AssertionError:
+                count +=1
+                continue
+        if count > 2:
+            raise AssertionError('Check test_recipeAjax test')
+
+        response = str(recipeAjax(self.requests['request2']).content)
+        ingredients2 = [i.item for i in Recipes.objects.all()[self.randomNumber2-1].ingredients()]
+        count = 0
+        for i in ingredients1 + ingredients2:
+            try:
+                self.assertIn(i, response)
+            except AssertionError:
+                count += 1
+                continue
+        if count > 3:
+            raise AssertionError('check test_recipeAjax')
+
+
+    def test_lookUpByPk(self):
+        lookFor =['url','title','yiel','active_time','total_time']
+        for i in self.requests:
+            response = str(lookUpByPk(self.requests[i]).content)
+            if i != 'request0':
+                recipe = Recipes.objects.get(pk=self.requests[i].GET.dict()['PK'])
+                for z in lookFor:
+                    self.assertIn(z,response)
+                self.assertIn(recipe.url, response)
+                self.assertIn(recipe.title, response)
 
 class test_filters_and_database_loader(TestCase):
+
     fixtures = ['testRecipes']
     def test_writeAFile_and_vegan_vegetarian_restrictions(self):
                 #test restrictions
@@ -156,6 +220,9 @@ class test_filters_and_database_loader(TestCase):
         for i in range(10):
             x = find_recipes(request3)
             self.assertIn(x,vF)
+
+        os.remove('youdecide/searches/searchFiles/vegan1.json')
+        os.remove('youdecide/searches/searchFiles/vegetarian1.json')
 
 
 

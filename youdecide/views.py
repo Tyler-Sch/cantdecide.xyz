@@ -14,12 +14,10 @@ def meals(request, days=0):
 
     return render(request, 'youdecide/table.html',{'pk':pk1 }) if list_ else render(request,'youdecide/table.html')
     
-
 def newRecipeAjax(request):
     return JsonResponse(Recipes.objects.get(pk=find_recipes(request)).returnJson())
 
 def recipeAjax(request):
-    
     return JsonResponse(helperGlist(request))
 
 def lookUpByPk(request):

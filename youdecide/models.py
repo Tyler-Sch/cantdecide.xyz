@@ -21,14 +21,17 @@ class Recipes(models.Model):
         return [instruct[i].step for i in range(len(instruct)-1,-1,-1)]
 
     def returnJson(self):
-        '''doesnt actually return json since Djangos new JsonResponse returns it automatically. Instead method returns dict that is easily converted into json'''
+        '''
+        doesnt actually return json since Djangos new JsonResponse returns it automatically. 
+        Instead method returns dict that is easily converted into json
+        '''
 
-        toConvert = {'url':self.url, 'title':self.title,'yiel':self.yiel,'active_time':self.active_time,'total_time':self.total_time,'imgUrl':self.imgUrl, 'pk':self.pk}
-        return toConvert
+        return {'url':self.url, 'title':self.title,'yiel':self.yiel,'active_time':self.active_time,
+            'total_time':self.total_time,'imgUrl':self.imgUrl, 'pk':self.pk}
 
     def ingredientsJson(self):
-        ''' again: returns a list of tuples that is easily converted in json
-            in the format [(amount, item, original_txt)]
+        ''' 
+        again: returns a list of tuples that is easily converted [(amount, item, original_txt)]
         '''
 
         return [(ingredient.item, ingredient.display) for ingredient in self.ingredients()]

@@ -13,7 +13,7 @@ def find_recipes(request):
     ####!!!! MODIFY THAT RANDOM RANGE BEFORE PRODUCTION !!!!#####
     filterDict = request.GET.getlist('restrictions')
     if not filterDict: 
-        return random.randint(1,15)
+        return random.randint(1,25)
     else:
         option_set = set(i for i in range(1,15))
         options = os.listdir('youdecide/searches/searchFiles')
