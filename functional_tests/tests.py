@@ -8,7 +8,7 @@ class NewVisitor(TestCase):
     fixtures = ['testRecipes.json']
 
     def setUp(self):
-        self.browser = webdriver.Firefox()
+        self.browser = webdriver.PhantomJS()
 
         self.browser.implicitly_wait(3)
        
@@ -66,6 +66,11 @@ class NewVisitor(TestCase):
         recipeString2 = self.findRecipeTitles() 
         assert(recipeString1 != recipeString2)
 
+    def test_reverse_recipe_search(self):
+        self.browser.get('http://localhost:8000/youdecide/meals')
+        self.browser.find_element_by_name('search').send_keys('Arctic Char')
+        self.clickNope()
+        assert('Arctic Char' in self.findProposed())
 
 
         
@@ -84,3 +89,6 @@ class NewVisitor(TestCase):
 
     def findRecipeTitles(self):
         return self.browser.find_element_by_id('thechosenfew').text
+
+    def findProposed(self):
+        return self.browser.find_element_by_id('mainDisplay').text

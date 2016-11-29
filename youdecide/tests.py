@@ -5,7 +5,7 @@ from django.http import HttpRequest, QueryDict
 from django.template.loader import render_to_string
 from youdecide.models import Recipes, Ingredient, Instructions 
 from youdecide.scripts.load_db import load_database
-from youdecide.menu_programs import find_recipes
+from youdecide.menu_programs import find_recipes, searchHelp
 import json
 import os
 import random
@@ -75,6 +75,19 @@ class test_outside_helper_functions(TestCase):
             self.assertNotEqual(Recipes.objects.first().ingredient_set.all(), 
                 Recipes.objects.last().ingredient_set.all())
 
+class test_find_functions(TestCase):
+    fixtures = ['testRecipes']
+
+    def test_searchHelp(self):
+        #test previously searched recipes 
+        x = searchHelp('test')
+        self.assertIn(1, set([1,2,3]))
+        self.assertIn(1,x)
+
+        #search 
+        
+
+        assert({4} == searchHelp('arctic char'))
 
     def test_find_recipes_function(self):
         recipePKSet = set()
@@ -90,6 +103,13 @@ class test_outside_helper_functions(TestCase):
 
         for _ in range(100):
             self.assertIn(find_recipes(request), restrictions)
+
+        #test search function
+        
+        request = HttpRequest()
+        request.GET = QueryDict('search=Arctic+char')
+        x = Recipes.objects.get(pk=find_recipes(request)).ingredients()
+        self.assertIn('arctic char', " ".join(i.item for i in x))
             
 
 
@@ -225,15 +245,6 @@ class test_filters_and_database_loader(TestCase):
         os.remove('youdecide/searches/searchFiles/vegetarian1.json')
 
 
-
-
-class Test_fiture(TestCase):
-    fixtures=['testRecipes.json']
-
-    def test_fixture(self):
-        print(len(Recipes.objects.all()))
-        assert(len(Recipes.objects.all()) > 10)
-        
 
 
 

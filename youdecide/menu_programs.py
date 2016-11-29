@@ -12,10 +12,11 @@ def find_recipes(request):
     '''
     ####!!!! MODIFY THAT RANDOM RANGE BEFORE PRODUCTION !!!!#####
     filterDict = request.GET.getlist('restrictions')
-    if not filterDict: 
+    search = request.GET.getlist('search')
+    if not filterDict and not search: 
         return random.randint(1,25)
     else:
-        option_set = set(i for i in range(1,15))
+        option_set = set(i for i in range(1,15)) if not search else searchHelp(search[0])
         options = os.listdir('youdecide/searches/searchFiles')
         for i in filterDict:
             if ''.join([i,'.json']) in options:
@@ -24,6 +25,28 @@ def find_recipes(request):
                 f.close()
                 option_set = option_set.intersection(recipe_pk)
         return random.sample(option_set,1)[0] if option_set else 0
+
+def searchHelp(searchString):
+    searchList = searchString.split(',')
+    searchResults = set()
+    previouslySearched = os.listdir('youdecide/searches/searchFiles/reverseIngredient')
+    toSearch = {}
+    for item in searchList:
+        if item + '.json' not in previouslySearched:
+            toSearch[item] = 0
+        else:
+            searchResults.update(loadPreviousSearch(item))
+            return searchResults
+            
+                
+
+
+    return set([4])
+
+def loadPreviousSearch(searchItem):
+    with open('youdecide/searches/searchFiles/reverseIngredient/' +searchItem + '.json', 'r') as f:
+        data = json.loads(f.read())
+    return set([data[searchItem]])
 
 
 def helperGlist(request):
