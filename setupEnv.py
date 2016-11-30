@@ -16,9 +16,14 @@ from youdecide import menu_programs
 
 for item in os.listdir('youdecide/searches/searchFiles'):
     os.remove('youdecide/searches/searchFiles/'+item)
+
+for item in os.listdir('youdecide/searches/searchFiles/reverseIngredient'):
+    os.remove('youdecide/searches/searchFiles/reverseIngredient/'+item)
     
 #delete test when running live
 #make sure to include the / at the end of directories
+Recipes.objects.create(title='Sorry, no recipe could be found')
+
 for item in os.listdir('recipes/mains/test/'):
     with open('recipes/mains/test/'+item, 'r') as f:
         recipeDict = json.loads(f.read())

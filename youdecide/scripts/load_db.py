@@ -14,9 +14,10 @@ def deletePara(ingredients):
     return [re.sub(dead_parrot,'',i) for i in ingredients]
 
 def load_database(recipeList):
-    
+
     '''
-    takes a list of recipes organized as dictionaries and loads them into the database. 
+    takes a list of recipes organized as dictionaries and loads them
+    into the database.
     The dictionary should have the parameters:
         'title'
         'url',
@@ -27,7 +28,7 @@ def load_database(recipeList):
         image url
         list of instructions
     '''
-    
+
     for recipe in recipeList:
         if len(recipe['ingredients']) == 0: continue
         t = recipe['title']

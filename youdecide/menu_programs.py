@@ -16,7 +16,10 @@ def find_recipes(request):
     if not filterDict and not search: 
         return random.randint(1,25)
     else:
-        option_set = set(i for i in range(1,15)) if not search else searchHelp(search[0])
+        option_set = set(
+            i for i in range(1,25)
+            ) if not search else searchHelp(search[0])
+
         options = os.listdir('youdecide/searches/searchFiles')
         for i in filterDict:
             if ''.join([i,'.json']) in options:
@@ -30,26 +33,31 @@ def searchHelp(searchString):
     '''
         ***items need to be seperated by comma***
 
-        takes a string with different ingredients, splits it into a list, 
-        checks if any items have been searched for before, if they have, 
-        opens files and extracts recipes. 
+        takes a string with different ingredients, splits it into a list,
+        checks if any items have been searched for before, if they have,
+        opens files and extracts recipes.
         Otherwise, sends it to get searched for the ingredient
     '''
     searchList = searchString.split(',')
     searchResults = []
-    previouslySearched = os.listdir('youdecide/searches/searchFiles/reverseIngredient')
+    previouslySearched = os.listdir(
+        'youdecide/searches/searchFiles/reverseIngredient'
+        )
     toSearch = []
     for item in searchList:
-        if item + '.json' not in previouslySearched:
-            toSearch.append(item.lower())
+        if item.strip() + '.json' not in previouslySearched:
+            toSearch.append(item.strip().lower())
         else:
-             searchResults.append(loadPreviousSearch(item))
+             searchResults.append(loadPreviousSearch(item.strip()))
     if toSearch:
         searchResults.append(reverseIngredients(toSearch))
     return set.intersection(*searchResults)
 
 def loadPreviousSearch(searchItem):
-    with open('youdecide/searches/searchFiles/reverseIngredient/' +searchItem + '.json', 'r') as f:
+    with open(
+        'youdecide/searches/searchFiles/reverseIngredient/' +
+        searchItem + '.json', 'r') as f:
+
         data = json.loads(f.read())
     return set(data[searchItem])
 
@@ -62,7 +70,7 @@ def reverseIngredients(listOfIngredients):
         title = recipe.title
         ingredients = " ".join(_.item for _ in recipe.ingredients())
         for ingredient in ingredientDict:
-            if ingredient in title:
+            if ingredient.title() in title:
                 ingredientDict[ingredient].append(recipe.pk)
             else:
                 if ingredient in ingredients:
@@ -72,19 +80,29 @@ def reverseIngredients(listOfIngredients):
     rememberTheIngredient(ingredientDict)
 
     #intersection
-    intersection = set.intersection(*[set(ingredientDict[m]) for m in ingredientDict])
+    intersection = set.intersection(
+        *[set(ingredientDict[m]) for m in ingredientDict]
+        )
 
     return intersection
 
 def rememberTheIngredient(dictionary):
     for ingredient in dictionary:
-        with open('youdecide/searches/searchFiles/reverseIngredient/'+ ingredient+'.json','w') as f:
+        with open(
+            'youdecide/searches/searchFiles/reverseIngredient/'+
+            ingredient+'.json','w') as f:
+
             f.write(json.dumps({ingredient:dictionary[ingredient]}))
-        
+
 def helperGlist(request):
     xpk = request.GET.getlist('PK')
     ingredients = {}
-    discard = set(['&nbsp','kosher salt and ground black pepper','kosher salt and freshly ground black pepper','ground pepper','ground black pepper','kosher salt', 'water','salt','pepper', 'salt and pepper', 'salt and black pepper'])
+    discard = set(
+        ['&nbsp','kosher salt and ground black pepper',
+        'kosher salt and freshly ground black pepper',
+        'ground pepper','ground black pepper','kosher salt',
+        'water','salt','pepper', 'salt and pepper', 'salt and black pepper']
+        )
     for i in xpk:
         recipe = Recipes.objects.get(pk=i).ingredients()
         for it in recipe:
@@ -109,16 +127,43 @@ def restrictions(recipe, restriction):
 
         restriction variable can be vegan or vegetarian
 
-        WILL HAVE PROBLEMS WITH VEGAN FOOD WITH NON-VEGAN NAMES UNLESS 'VEGAN' IS SAID IN THE INGREDIENTS OR TITLE
+        WILL HAVE PROBLEMS WITH VEGAN FOOD WITH NON-VEGAN
+        NAMES UNLESS 'VEGAN' IS SAID IN THE INGREDIENTS OR TITLE
         ie: un-turkey, faux chicken
     '''
     title = recipe.title.lower()
     if restriction in title.lower(): return True
-    restrictDict = {'vegan':set(['pancetta','mussels','butter','bass','turbot','flounder','oxtail','veal','porterhouse','grouper','snapper','tuna','cod','trout','prawns','branzino','sole','anchovy','anchovies','sardines','calamari','halibut','prime rib','lobster','lobsters','foie gras','quail','rabbit','venison','crabs','crab','goat','proscuitto','fontina','chedder','ricotta','yogurt','cream','marscapone','mascarpone','guanciale','squid','ribs','spareribs','rib','bacon','bratwurst','turkey','steak','steaks','mozzarella','scallops','meat','pig','chicken','goose', 'beef','pork','bison','filet', 'egg ','eggs','huevos','cheese','milk','fish','sardine','haddock','shrimp','duck','lamb','ham','carne','clams','salmon','herring','chorizo','mackeral','catfish']),'vegetarian':set(['pancetta','mussels','bass','turbot','flounder','oxtail','veal','porterhouse','grouper','snapper','tuna','cod','trout','prawns','branzino','sole','anchovy','anchovies','sardines','calamari','halibut','prime rib','lobster','lobsters','foie gras','quail','rabbit','venison','crabs','crab','proscuitto','guanciale','squid','ribs','spareribs','rib','bacon','bratwurst','turkey','steak','steaks','scallops','meat','pig','chicken','goose', 'beef','pork','bison','fish','sardine','haddock','shrimp','duck','lamb','ham','carne','clams','salmon'])}
+    restrictDict = {'vegan':set(
+        ['pancetta','mussels','butter','bass','turbot','flounder','oxtail',
+        'veal','porterhouse','grouper','snapper','tuna','cod','trout',
+        'prawns','branzino','sole','anchovy','anchovies','sardines','calamari',
+        'halibut','prime rib','lobster','lobsters','foie gras','quail','rabbit',
+        'venison','crabs','crab','goat','proscuitto','fontina','chedder','ricotta',
+        'yogurt','cream','marscapone','mascarpone','guanciale','squid','ribs',
+        'spareribs','rib','bacon','bratwurst','turkey','steak','steaks',
+        'mozzarella','scallops','meat','pig','chicken','goose', 'beef','pork',
+        'bison','filet', 'egg ','eggs','huevos','cheese','milk','fish','sardine',
+        'haddock','shrimp','duck','lamb','ham','carne','clams','salmon',
+        'herring','chorizo','mackeral','catfish']
+        ),'vegetarian':set(
+        ['pancetta','mussels','bass','turbot','flounder','oxtail','veal',
+        'porterhouse','grouper','snapper','tuna','cod','trout','prawns',
+        'branzino','sole','anchovy','anchovies','sardines','calamari','halibut',
+        'prime rib','lobster','lobsters','foie gras','quail','rabbit',
+        'venison','crabs','crab','proscuitto','guanciale','squid','ribs',
+        'spareribs','rib','bacon','bratwurst','turkey','steak','steaks',
+        'scallops','meat','pig','chicken','goose', 'beef','pork','bison',
+        'fish','sardine','haddock','shrimp','duck','lamb','ham','carne',
+        'clams','salmon']
+        )}
 
-    if restriction not in restrictDict: raise KeyError ('restriction not in restrictDict')
+    if restriction not in restrictDict: raise KeyError(
+        'restriction not in restrictDict'
+        )
     #check title
-    result = True if not len(set(re.split(r'\W+', title)).intersection(restrictDict[restriction])) else False
+    result = True if not len(set(
+        re.split(r'\W+', title)).intersection(restrictDict[restriction])
+        ) else False
     #check ingredients
     if result:
         ingredients = (x.original_txt.lower() for x in recipe.ingredient_set.all())
