@@ -51,7 +51,7 @@ def searchHelp(searchString):
 def loadPreviousSearch(searchItem):
     with open('youdecide/searches/searchFiles/reverseIngredient/' +searchItem + '.json', 'r') as f:
         data = json.loads(f.read())
-    return set([data[searchItem]])
+    return set(data[searchItem])
 
 def reverseIngredients(listOfIngredients):
     #takes a list of ingredients, creates a file which says it was searched
@@ -67,16 +67,20 @@ def reverseIngredients(listOfIngredients):
             else:
                 if ingredient in ingredients:
                     ingredientDict[ingredient].append(recipe.pk)
-   
+
     #memo
+    rememberTheIngredient(ingredientDict)
 
     #intersection
     intersection = set.intersection(*[set(ingredientDict[m]) for m in ingredientDict])
 
     return intersection
 
-
-
+def rememberTheIngredient(dictionary):
+    for ingredient in dictionary:
+        with open('youdecide/searches/searchFiles/reverseIngredient/'+ ingredient+'.json','w') as f:
+            f.write(json.dumps({ingredient:dictionary[ingredient]}))
+        
 def helperGlist(request):
     xpk = request.GET.getlist('PK')
     ingredients = {}

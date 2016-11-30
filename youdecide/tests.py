@@ -9,6 +9,7 @@ from youdecide.menu_programs import find_recipes, searchHelp, reverseIngredients
 import json
 import os
 import random
+import time
 
 
 class home_page_test(TestCase):
@@ -83,7 +84,6 @@ class test_find_functions(TestCase):
         x = searchHelp('test')
         self.assertIn(1, set([1,2,3]))
         self.assertIn(1,x)
-
         #search 
         #test reverseIngredients function
         for i in [['arctic char'],['chicken'],['chicken','onion']]:
@@ -92,21 +92,49 @@ class test_find_functions(TestCase):
             ingredients = " ".join(i.item for i in recipe.ingredients())
             for item in i:
                 self.assertIn(item, ingredients)
-        #test searchHelp is routing search list properly
+       
+        self.removeMemo()
+        #test searchHelp is routing search list properly and time for memo test
+        start = time.time() 
+        self.helpSearch()
+        stop = time.time()
+        timeNonMemo = stop - start
+        #test if memo triggered
+        dirList = os.listdir('youdecide/searches/searchFiles/reverseIngredient')
+        self.assertIn('onion.json', dirList)
+        start = time.time()
+        self.helpSearch()
+        stop = time.time()
+        timeMemo = stop - start
+        assert(timeNonMemo > timeMemo)
+        print('non-memo time: '+str(timeNonMemo))
+        print('memo time: ' +str(timeMemo))
+        self.removeMemo()
+        
 
-        x = searchHelp('onion')
-        y = searchHelp('beet')
-        for ingredient in ['onion','beet','chicken', 'chicken,onion']:
+    def helpSearch(self):
+        for ingredient in ['onion','beet','beef', 'chicken,onion']:
             x = searchHelp(ingredient)
             for pKey in x:
                 recipe = Recipes.objects.get(pk=pKey)
                 ingredients = ' '.join(_.item for _ in recipe.ingredients())
                 for ingredient_ in ingredient.split(','):
                     self.assertIn(ingredient_, ingredients)
-            
+
+    def removeMemo(self):
+        for i in ['arctic char','chicken', 'onion', 'beef', 'beet']:
+            try:
+                os.remove('youdecide/searches/searchFiles' +
+                    '/reverseIngredient/' + i +'.json'
+                        )
+            except FileNotFoundError:
+                continue
+
+        
 
 
-        #assert({4} == searchHelp('arctic char'))
+
+
 
     def test_find_recipes_function(self):
         recipePKSet = set()
