@@ -5,7 +5,7 @@ from django.http import HttpRequest, QueryDict
 from django.template.loader import render_to_string
 from youdecide.models import Recipes, Ingredient, Instructions 
 from youdecide.scripts.load_db import load_database
-from youdecide.menu_programs import find_recipes, searchHelp
+from youdecide.menu_programs import find_recipes, searchHelp, reverseIngredients
 import json
 import os
 import random
@@ -52,7 +52,7 @@ class Test_data_base_entries(TestCase):
         self.assertEqual(len(Ingredient.objects.all()), len(test_chicken.ingredient_set.all()))
 
 
-class test_outside_helper_functions(TestCase):
+class test_loadDatabase(TestCase):
 
 
     def test_load_database(self):
@@ -78,16 +78,35 @@ class test_outside_helper_functions(TestCase):
 class test_find_functions(TestCase):
     fixtures = ['testRecipes']
 
-    def test_searchHelp(self):
+    def test_search_functions(self):
         #test previously searched recipes 
         x = searchHelp('test')
         self.assertIn(1, set([1,2,3]))
         self.assertIn(1,x)
 
         #search 
-        
+        #test reverseIngredients function
+        for i in [['arctic char'],['chicken'],['chicken','onion']]:
+            x = random.sample(reverseIngredients(i),1)[0]
+            recipe = Recipes.objects.get(pk=x)
+            ingredients = " ".join(i.item for i in recipe.ingredients())
+            for item in i:
+                self.assertIn(item, ingredients)
+        #test searchHelp is routing search list properly
 
-        assert({4} == searchHelp('arctic char'))
+        x = searchHelp('onion')
+        y = searchHelp('beet')
+        for ingredient in ['onion','beet','chicken', 'chicken,onion']:
+            x = searchHelp(ingredient)
+            for pKey in x:
+                recipe = Recipes.objects.get(pk=pKey)
+                ingredients = ' '.join(_.item for _ in recipe.ingredients())
+                for ingredient_ in ingredient.split(','):
+                    self.assertIn(ingredient_, ingredients)
+            
+
+
+        #assert({4} == searchHelp('arctic char'))
 
     def test_find_recipes_function(self):
         recipePKSet = set()

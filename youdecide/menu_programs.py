@@ -24,29 +24,57 @@ def find_recipes(request):
                 recipe_pk = json.loads(f.read())
                 f.close()
                 option_set = option_set.intersection(recipe_pk)
-        return random.sample(option_set,1)[0] if option_set else 0
+        return random.sample(option_set,1)[0] if option_set else 1
 
 def searchHelp(searchString):
+    '''
+        ***items need to be seperated by comma***
+
+        takes a string with different ingredients, splits it into a list, 
+        checks if any items have been searched for before, if they have, 
+        opens files and extracts recipes. 
+        Otherwise, sends it to get searched for the ingredient
+    '''
     searchList = searchString.split(',')
-    searchResults = set()
+    searchResults = []
     previouslySearched = os.listdir('youdecide/searches/searchFiles/reverseIngredient')
-    toSearch = {}
+    toSearch = []
     for item in searchList:
         if item + '.json' not in previouslySearched:
-            toSearch[item] = 0
+            toSearch.append(item.lower())
         else:
-            searchResults.update(loadPreviousSearch(item))
-            return searchResults
-            
-                
-
-
-    return set([4])
+             searchResults.append(loadPreviousSearch(item))
+    if toSearch:
+        searchResults.append(reverseIngredients(toSearch))
+    return set.intersection(*searchResults)
 
 def loadPreviousSearch(searchItem):
     with open('youdecide/searches/searchFiles/reverseIngredient/' +searchItem + '.json', 'r') as f:
         data = json.loads(f.read())
     return set([data[searchItem]])
+
+def reverseIngredients(listOfIngredients):
+    #takes a list of ingredients, creates a file which says it was searched
+    #and returns set of items which contain the ingredients
+
+    ingredientDict = {i:[] for i in listOfIngredients}
+    for recipe in Recipes.objects.all():
+        title = recipe.title
+        ingredients = " ".join(_.item for _ in recipe.ingredients())
+        for ingredient in ingredientDict:
+            if ingredient in title:
+                ingredientDict[ingredient].append(recipe.pk)
+            else:
+                if ingredient in ingredients:
+                    ingredientDict[ingredient].append(recipe.pk)
+   
+    #memo
+
+    #intersection
+    intersection = set.intersection(*[set(ingredientDict[m]) for m in ingredientDict])
+
+    return intersection
+
 
 
 def helperGlist(request):
@@ -75,8 +103,8 @@ def restrictions(recipe, restriction):
         checks the title for any non-vegan items
         then checks each ingredient
 
-        restriction variable can be vegan or vegetarian 
-        
+        restriction variable can be vegan or vegetarian
+
         WILL HAVE PROBLEMS WITH VEGAN FOOD WITH NON-VEGAN NAMES UNLESS 'VEGAN' IS SAID IN THE INGREDIENTS OR TITLE
         ie: un-turkey, faux chicken
     '''
@@ -87,15 +115,15 @@ def restrictions(recipe, restriction):
     if restriction not in restrictDict: raise KeyError ('restriction not in restrictDict')
     #check title
     result = True if not len(set(re.split(r'\W+', title)).intersection(restrictDict[restriction])) else False
-    
+    #check ingredients
     if result:
         ingredients = (x.original_txt.lower() for x in recipe.ingredient_set.all())
         joinedSet = set(re.split(r'\W+'," ".join(ingredients)))
         if restriction in joinedSet: return True
         if len(joinedSet.intersection(restrictDict[restriction])):
             return False
-    
-    return result 
+
+    return result
 
 
 
