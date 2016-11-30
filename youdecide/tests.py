@@ -184,7 +184,7 @@ class test_views(TestCase):
         attrs = ['pk','yiel','imgUrl','title','url']
         responseSet = set()
         for _ in range(5):
-            response = str(newRecipeAjax(self.requests['request0']).content)
+            response = str(newRecipeAjax(self.requests['request1']).content)
             for i in attrs:
                 self.assertIn(i, response)
             responseSet.add(response)

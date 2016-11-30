@@ -14,10 +14,10 @@ def find_recipes(request):
     filterDict = request.GET.getlist('restrictions')
     search = request.GET.getlist('search')
     if not filterDict and not search: 
-        return random.randint(1,25)
+        return random.randint(2,9415)
     else:
         option_set = set(
-            i for i in range(1,25)
+            i for i in range(2,9415)
             ) if not search else searchHelp(search[0])
 
         options = os.listdir('youdecide/searches/searchFiles')

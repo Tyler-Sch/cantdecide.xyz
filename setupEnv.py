@@ -24,8 +24,8 @@ for item in os.listdir('youdecide/searches/searchFiles/reverseIngredient'):
 #make sure to include the / at the end of directories
 Recipes.objects.create(title='Sorry, no recipe could be found')
 
-for item in os.listdir('recipes/mains/test/'):
-    with open('recipes/mains/test/'+item, 'r') as f:
+for item in os.listdir('recipes/mains/'):
+    with open('recipes/mains/'+item, 'r') as f:
         recipeDict = json.loads(f.read())
         load_db.load_database(recipeDict)
 
