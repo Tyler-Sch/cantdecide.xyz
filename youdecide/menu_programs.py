@@ -40,7 +40,6 @@ def searchHelp(searchString):
     '''
     searchList = searchString.split(',')
     searchResults = []
-    print('searchList: '+str(searchList))
     searchFile = open('youdecide/searches/searchFiles/searchDict.json','r')
     previouslySearched = json.loads(searchFile.read())
     searchFile.close()
@@ -51,7 +50,6 @@ def searchHelp(searchString):
             toSearch.append(item.lower())
         else:
              searchResults.append(loadPreviousSearch(item, previouslySearched))
-    print('to search '+ str(toSearch))
     if toSearch:
         searchResults.append(reverseIngredients(toSearch, previouslySearched))
     
