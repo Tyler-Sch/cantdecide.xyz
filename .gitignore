@@ -2,10 +2,6 @@ SEmains.json
 db.sqlite3
 cal
 __pycache__
-youdecide/searches/searchFiles
 testIng.json
 junk2.py
-youdecide/templates/youdecde/basebackup.html
-youdecide/templates/youdecde/tablebackup.html
-youdecide/templates/youdecde/tablebackup2.html
-youdecide/templates/youdecde/tablebackup3.html
+makemymeal/settings.py
