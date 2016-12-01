@@ -45,9 +45,9 @@ def searchHelp(searchString):
     searchFile.close()
     toSearch = []
     for item in searchList:
-        item = item.strip()
+        item = item.lower().strip()
         if item not in previouslySearched:
-            toSearch.append(item.lower())
+            toSearch.append(item)
         else:
              searchResults.append(loadPreviousSearch(item, previouslySearched))
     if toSearch:
