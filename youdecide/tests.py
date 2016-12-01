@@ -93,23 +93,23 @@ class test_find_functions(TestCase):
             for item in i:
                 self.assertIn(item, ingredients)
        
-        self.removeMemo()
+        #self.removeMemo()
         #test searchHelp is routing search list properly and time for memo test
-        start = time.time() 
-        self.helpSearch()
-        stop = time.time()
-        timeNonMemo = stop - start
+        #start = time.time() 
+        #self.helpSearch()
+        #stop = time.time()
+        #timeNonMemo = stop - start
         #test if memo triggered
-        dirList = os.listdir('youdecide/searches/searchFiles/reverseIngredient')
-        self.assertIn('onion.json', dirList)
-        start = time.time()
-        self.helpSearch()
-        stop = time.time()
-        timeMemo = stop - start
-        assert(timeNonMemo > timeMemo)
-        print('non-memo time: '+str(timeNonMemo))
-        print('memo time: ' +str(timeMemo))
-        self.removeMemo()
+        #dirList = os.listdir('youdecide/searches/searchFiles/reverseIngredient')
+        #self.assertIn('onion.json', dirList)
+        #start = time.time()
+        #self.helpSearch()
+        #stop = time.time()
+        #timeMemo = stop - start
+        #assert(timeNonMemo > timeMemo)
+        #print('non-memo time: '+str(timeNonMemo))
+        #print('memo time: ' +str(timeMemo))
+        #self.removeMemo()
         
 
     def helpSearch(self):

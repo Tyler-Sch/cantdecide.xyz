@@ -40,28 +40,29 @@ def searchHelp(searchString):
     '''
     searchList = searchString.split(',')
     searchResults = []
-    previouslySearched = os.listdir(
-        'youdecide/searches/searchFiles/reverseIngredient'
-        )
+    print('searchList: '+str(searchList))
+    searchFile = open('youdecide/searches/searchFiles/searchDict.json','r')
+    previouslySearched = json.loads(searchFile.read())
+    searchFile.close()
     toSearch = []
     for item in searchList:
-        if item.strip() + '.json' not in previouslySearched:
-            toSearch.append(item.strip().lower())
+        item = item.strip()
+        if item not in previouslySearched:
+            toSearch.append(item.lower())
         else:
-             searchResults.append(loadPreviousSearch(item.strip()))
+             searchResults.append(loadPreviousSearch(item, previouslySearched))
+    print('to search '+ str(toSearch))
     if toSearch:
-        searchResults.append(reverseIngredients(toSearch))
+        searchResults.append(reverseIngredients(toSearch, previouslySearched))
+    
     return set.intersection(*searchResults)
 
-def loadPreviousSearch(searchItem):
-    with open(
-        'youdecide/searches/searchFiles/reverseIngredient/' +
-        searchItem + '.json', 'r') as f:
+def loadPreviousSearch(searchItem, searchDict):
 
-        data = json.loads(f.read())
-    return set(data[searchItem])
+    data = searchDict[searchItem]
+    return set(data)
 
-def reverseIngredients(listOfIngredients):
+def reverseIngredients(listOfIngredients, searchDict):
     #takes a list of ingredients, creates a file which says it was searched
     #and returns set of items which contain the ingredients
 
@@ -77,7 +78,7 @@ def reverseIngredients(listOfIngredients):
                     ingredientDict[ingredient].append(recipe.pk)
 
     #memo
-    rememberTheIngredient(ingredientDict)
+    rememberTheIngredient(ingredientDict, searchDict)
 
     #intersection
     intersection = set.intersection(
@@ -86,13 +87,11 @@ def reverseIngredients(listOfIngredients):
 
     return intersection
 
-def rememberTheIngredient(dictionary):
-    for ingredient in dictionary:
-        with open(
-            'youdecide/searches/searchFiles/reverseIngredient/'+
-            ingredient+'.json','w') as f:
+def rememberTheIngredient(dictionary, searchDict):
+    searchDict.update(dictionary)
+    with open('youdecide/searches/searchFiles/searchDict.json','w') as f:
+        f.write(json.dumps(searchDict))
 
-            f.write(json.dumps({ingredient:dictionary[ingredient]}))
 
 def helperGlist(request):
     xpk = request.GET.getlist('PK')

@@ -20,7 +20,10 @@
                 PKTemp=pk;
                 return;
             }
+            function sendForm(){
+                return false;
 
+            }
             //html modifying functions
 
             function publishGList(json){
@@ -130,7 +133,7 @@
 </head>
 <body>
     <div class="container">
-     <form id='form1'class="form">
+     <form id='form1'class="form" onsubmit="sendForm();return false;">
         <label class="radio-inline">               
             <input type='radio' name='restrictions' value='vegan'/>vegan
         </label>
@@ -140,7 +143,8 @@
         <label class="radio-inline">
             <input type="radio" name="restrictions" value="everything"/>I'll eat whatever
         </label>
-        <input type="text" name="search">
+        <label>search</label>
+        <input class="form-control" type="text" name="search">
      </form>
     </div>
     <div class='container text-center'>
