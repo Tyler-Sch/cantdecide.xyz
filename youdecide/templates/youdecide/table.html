@@ -34,18 +34,30 @@
                     ing.push(i);
                 }
                 for (i=0;i<ing.length;i++){
-                    gList += "<tr style='inline-block'><td><input type='checkbox' value=''/></td><td class='ingredient'>" + ing[i] + "</td><td style='display:none;' class='ingredient'>" + json[ing[i]] + "</td></tr>"; 
+                    gList += "<tr style='inline-block'><td>"+
+                        "<input type='checkbox' value=''/></td>"+
+                        "<td class='ingredient'>" + ing[i] + 
+                        "</td><td style='display:none;' class='ingredient'>" + 
+                        json[ing[i]] + "</td></tr>"; 
                     //var of display is json[ing[i]]
                     } 
                 $("#grocery_list").html(gList);
             }
 
             function publishChosenRecipes(recipeArray,targetId){
-                //organizes chart of chosen recipes. Full row: Title \ row divided by 3:[ active time, yield, and total Time]
+                //organizes chart of chosen recipes. 
+                // Full row: Title \ row divided by 3:[ active time, yield,
+                // and total Time]
                 var htm = '';
                 $.each(recipeArray, function(){
-                    htm += "<div class='container-fluid'><div class='row'><div class='col-xs-12'><a target='_blank' class='text-center' id='mainDisplay' href='" + this.url +"'><p>"+this.title + "</p></a></div></div><div class='row'><div class='col-xs-6 text-center'><p>"+ this.yiel+ 
-                    "</p></div><div class='col-xs-6 text-center'><p>total time: "+ this.total_time+ "</p></div></div></div>";
+                    htm += "<div class='container-fluid'><div class='row'>"+
+                        "<div class='col-xs-12'><a target='_blank'"+
+                        " class='text-center' id='mainDisplay' href='" + 
+                        this.url +"'><p>"+this.title + 
+                        "</p></a></div></div><div class='row'"+
+                        "><div class='col-xs-6 text-center'><p>"+ this.yiel+ 
+                        "</p></div><div class='col-xs-6 text-center'>"+
+                        "<p>total time: "+ this.total_time+ "</p></div></div></div>";
                 });
                 $(targetId).html(htm);
                 
@@ -54,8 +66,9 @@
             //ajax functions
 
             function loader(){
-                //loads grocery list. requests json file arranged as {ingredient: amounts} for all ingredients
-                //in current recipes
+                // loads grocery list. requests json file arranged 
+                // as {ingredient: amounts} for all ingredients
+                // in current recipes
                 $.ajax({
                     url:"../recipeAjax",
                     data:'PK=' + PKeyArray.join('&PK='),
@@ -69,8 +82,10 @@
             }
 
             function loadSavedRecipes(){
-                //sends request by PK for recipe info ie: title, yield, time, url, imgUrl. 
-                //Run when page loads to gather any recipes that might be saved in url
+                // sends request by PK for recipe info 
+                // ie: title, yield, time, url, imgUrl. 
+                // Run when page loads to gather any recipes that 
+                // might be saved in url
                 $.ajax({
                     url:"../lookUpByPk",
                     data:"PK=" +PKeyArray.join("&PK="),
@@ -94,7 +109,8 @@
 
             //event listener and ajax
            function loadNope(){
-                //loads new recipe. Takes info in restriction form, gets another recipe object
+                // loads new recipe. Takes info in restriction form, 
+                // gets another recipe object
                 var d = $("#form1").serialize();
                 $.ajax({
                     url:"../newAjax",
@@ -103,8 +119,11 @@
                     dataType:"json"
                 })
                 .done(function(json){
-                    recipeObjTemp={'title':json.title,'url':json.url,'yiel':json.yiel,'active_time':json.active_time,
-                    'total_time':json.total_time};
+                    recipeObjTemp={'title':json.title,
+                                   'url':json.url,
+                                   'yiel':json.yiel,
+                                   'active_time':json.active_time,
+                                   'total_time':json.total_time};
                     savePK(json.pk);
                     publishChosenRecipes([recipeObjTemp],'#meal_table_head');
 
@@ -117,7 +136,8 @@
             
             }); 
             $("#yep").click(function(){
-                //Puts selected recipe into URL, puts it in the selected recipe box, and loads a grocery list
+                // Puts selected recipe into URL, puts it in 
+                // the selected recipe box, and loads a grocery list
                 PKeyArray.push(PKTemp);
                 recipeObjs.push(recipeObjTemp);
                 loader();
@@ -154,8 +174,11 @@
         <label class="radio-inline">
             <input type="radio" name="restrictions" value="everything"/>I'll eat whatever
         </label>
-        <label>search</label>
-        <input class="form-control" type="text" name="search">
+        <input class='form-control' type="text" name="search">
+        <small>Enter ingredients you wish to restrict results to separated by a comma</small>
+        <small>
+            or  leave blank
+        </small>
      </form>
     </div>
     <div class='container text-center'>
