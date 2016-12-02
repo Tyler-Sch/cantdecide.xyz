@@ -90,9 +90,10 @@
             }
 
             loadSavedRecipes();
+            loadNope();
 
             //event listener and ajax
-            $("#nope").click(function(){
+           function loadNope(){
                 //loads new recipe. Takes info in restriction form, gets another recipe object
                 var d = $("#form1").serialize();
                 $.ajax({
@@ -108,10 +109,13 @@
                     publishChosenRecipes([recipeObjTemp],'#meal_table_head');
 
                 });
-            });
+            }
 
             //evenet listeners
+            $("#nope").click(function(){
+                loadNope();
             
+            }); 
             $("#yep").click(function(){
                 //Puts selected recipe into URL, puts it in the selected recipe box, and loads a grocery list
                 PKeyArray.push(PKTemp);
@@ -133,7 +137,7 @@
 </head>
 <body>
     <div class="container">
-     <form id='form1'class="form" onsubmit="sendForm();return false;">
+     <form id='form1'class="form" onsubmit="return false;">
         <label class="radio-inline">               
             <input type='radio' name='restrictions' value='vegan'/>vegan
         </label>
