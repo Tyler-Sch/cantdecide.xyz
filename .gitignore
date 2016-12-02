@@ -5,3 +5,6 @@ __pycache__
 testIng.json
 junk2.py
 makemymeal/settings.py
+ghostdriver.log
+recipes/apps
+youdecide/searches/searchFiles/reverseIngredient/
