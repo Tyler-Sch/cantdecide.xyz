@@ -51,9 +51,13 @@ def searchHelp(searchString):
         else:
              searchResults.append(loadPreviousSearch(item, previouslySearched))
     if toSearch:
-        searchResults.append(reverseIngredients(toSearch, previouslySearched))
+        with open('youdecide/searches/searchFiles/searchError.log','a') as f:
+            for i in toSearch:
+                f.write(i+"\n")
+        #searchResults.append(reverseIngredients(toSearch, previouslySearched))
+        searchResults = []
     
-    return set.intersection(*searchResults)
+    return set.intersection(*searchResults) if searchResults else {1}
 
 def loadPreviousSearch(searchItem, searchDict):
 
