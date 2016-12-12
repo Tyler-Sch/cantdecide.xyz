@@ -5,10 +5,10 @@ from django.test import TestCase
 
 
 class NewVisitor(TestCase):
-    fixtures = ['testRecipes.json']
+    #fixtures = ['testRecipes.json']
 
     def setUp(self):
-        self.browser = webdriver.PhantomJS()
+        self.browser = webdriver.Firefox()
 
         self.browser.implicitly_wait(3)
        
@@ -67,10 +67,13 @@ class NewVisitor(TestCase):
         assert(recipeString1 != recipeString2)
 
     def test_reverse_recipe_search(self):
-        self.browser.get('http://localhost:8000/youdecide/meals')
-        self.browser.find_element_by_name('search').send_keys('Arctic Char')
+        self.browser.get('http://cantdecide.xyz/youdecide/meals')
+        self.browser.find_element_by_name('search').send_keys('salmon')
         self.clickNope()
-        assert('Arctic Char' in self.findProposed())
+        self.clickYep()
+        groceryList = self.findGroceryList()
+        print(groceryList)
+        assert('salmon' in groceryList)
 
 
         

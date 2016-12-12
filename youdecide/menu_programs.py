@@ -11,6 +11,7 @@ def find_recipes(request):
         returns a random recipe that matches the parameters
     '''
     ####!!!! MODIFY THAT RANDOM RANGE BEFORE PRODUCTION !!!!#####
+
     filterDict = request.GET.getlist('restrictions')
     search = request.GET.getlist('search')
     if not filterDict and not search: 
@@ -29,7 +30,7 @@ def find_recipes(request):
                 option_set = option_set.intersection(recipe_pk)
         return random.sample(option_set,1)[0] if option_set else 1
 
-def searchHelp(searchString):
+def searchHelp(searchString, file_='youdecide/searches/searchFiles/searchDict.json'):
     '''
         ***items need to be seperated by comma***
 
@@ -40,7 +41,7 @@ def searchHelp(searchString):
     '''
     searchList = searchString.split(',')
     searchResults = []
-    searchFile = open('youdecide/searches/searchFiles/searchDict.json','r')
+    searchFile = open(file_,'r')
     previouslySearched = json.loads(searchFile.read())
     searchFile.close()
     toSearch = []
@@ -54,9 +55,9 @@ def searchHelp(searchString):
         with open('youdecide/searches/searchFiles/searchError.log','a') as f:
             for i in toSearch:
                 f.write(i+"\n")
-        #searchResults.append(reverseIngredients(toSearch, previouslySearched))
+        #searchResults.append(reverseIngredients(toSearch, previouslySearched, file_))
         searchResults = []
-    
+
     return set.intersection(*searchResults) if searchResults else {1}
 
 def loadPreviousSearch(searchItem, searchDict):
@@ -64,9 +65,15 @@ def loadPreviousSearch(searchItem, searchDict):
     data = searchDict[searchItem]
     return set(data)
 
-def reverseIngredients(listOfIngredients, searchDict):
-    #takes a list of ingredients, creates a file which says it was searched
-    #and returns set of items which contain the ingredients
+def reverseIngredients(listOfIngredients, searchDict, outputFile='youdecide/searches/searchFiles/searchDict.json'):
+    '''
+    takes a list of ingredients, creates a file which says it was searched
+    and returns set of items which contain the ingredients
+
+    if populating the entire search dictionary, this function
+    works best with a long listOfIngredients
+
+    '''
 
     ingredientDict = {i:[] for i in listOfIngredients}
     for recipe in Recipes.objects.all():
@@ -80,18 +87,18 @@ def reverseIngredients(listOfIngredients, searchDict):
                     ingredientDict[ingredient].append(recipe.pk)
 
     #memo
-    rememberTheIngredient(ingredientDict, searchDict)
+    rememberTheIngredient(ingredientDict, searchDict, outputFile)
 
     #intersection
-    intersection = set.intersection(
-        *[set(ingredientDict[m]) for m in ingredientDict]
-        )
+    #intersection = set.intersection(
+        #*[set(ingredientDict[m]) for m in ingredientDict]
+        #)
 
-    return intersection
+    #return intersection
 
-def rememberTheIngredient(dictionary, searchDict):
+def rememberTheIngredient(dictionary, searchDict, outputFile):
     searchDict.update(dictionary)
-    with open('youdecide/searches/searchFiles/searchDict.json','w') as f:
+    with open(outputFile,'w') as f:
         f.write(json.dumps(searchDict))
 
 
