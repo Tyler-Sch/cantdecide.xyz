@@ -7,7 +7,7 @@ from .models import Recipes
 
 def find_recipes(request):
     '''
-        applys filters and 
+        applys filters and
         returns a random recipe that matches the parameters
     '''
     ####!!!! MODIFY THAT RANDOM RANGE BEFORE PRODUCTION !!!!#####
@@ -19,7 +19,8 @@ def find_recipes(request):
     else:
         option_set = set(
             i for i in range(2,9415)
-            ) if not search else searchHelp(search[0])
+            ) if not search else searchHelp(
+                search[0])
 
         options = os.listdir('youdecide/searches/searchFiles')
         for i in filterDict:
@@ -55,7 +56,6 @@ def searchHelp(searchString, file_='youdecide/searches/searchFiles/searchDict.js
         with open('youdecide/searches/searchFiles/searchError.log','a') as f:
             for i in toSearch:
                 f.write(i+"\n")
-        #searchResults.append(reverseIngredients(toSearch, previouslySearched, file_))
         searchResults = []
 
     return set.intersection(*searchResults) if searchResults else {1}
@@ -64,43 +64,6 @@ def loadPreviousSearch(searchItem, searchDict):
 
     data = searchDict[searchItem]
     return set(data)
-
-def reverseIngredients(listOfIngredients, searchDict, outputFile='youdecide/searches/searchFiles/searchDict.json'):
-    '''
-    takes a list of ingredients, creates a file which says it was searched
-    and returns set of items which contain the ingredients
-
-    if populating the entire search dictionary, this function
-    works best with a long listOfIngredients
-
-    '''
-
-    ingredientDict = {i:[] for i in listOfIngredients}
-    for recipe in Recipes.objects.all():
-        title = recipe.title
-        ingredients = " ".join(_.item for _ in recipe.ingredients())
-        for ingredient in ingredientDict:
-            if ingredient.title() in title:
-                ingredientDict[ingredient].append(recipe.pk)
-            else:
-                if ingredient in ingredients:
-                    ingredientDict[ingredient].append(recipe.pk)
-
-    #memo
-    rememberTheIngredient(ingredientDict, searchDict, outputFile)
-
-    #intersection
-    #intersection = set.intersection(
-        #*[set(ingredientDict[m]) for m in ingredientDict]
-        #)
-
-    #return intersection
-
-def rememberTheIngredient(dictionary, searchDict, outputFile):
-    searchDict.update(dictionary)
-    with open(outputFile,'w') as f:
-        f.write(json.dumps(searchDict))
-
 
 def helperGlist(request):
     xpk = request.GET.getlist('PK')

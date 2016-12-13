@@ -1,7 +1,6 @@
 from youdecide.models import Ingredient, Recipes
 import json
-from multiprocessing import Pool
-
+from .writeToDiskDecorator import writeJson
 
 class ConstructSearchDict():
     '''
@@ -12,6 +11,9 @@ class ConstructSearchDict():
         1. buildPopularIngredients
         2. reverseIngredient
         3. writeDictionaryToFile
+        ------ OR -----
+        run setupAll(output)
+
     '''
     def __init__(self, test=False,ingredients=Ingredient.objects.all(), recipes=Recipes.objects.all()):
 
@@ -62,10 +64,14 @@ class ConstructSearchDict():
                     if ingredient in ingredients:
                         self.ingredientDict[ingredient].append(recipe.pk)
 
-    
-    def writeDictionaryToFile(self, output):
+    def writeAFile(self, input_,outputPath):
+        with open(outputPath, 'w') as f:
+            f.write(json.dumps(input_))
 
-        with open(output, 'w') as f:
-            f.write(json.dumps(self.ingredientDict))
+    def setupAll(self, outputPath):
+        self.buildPopularIngredients()
+        self.reverseIngredient()
+        self.writeAFile(self.ingredientDict, outputPath)
+
 
 

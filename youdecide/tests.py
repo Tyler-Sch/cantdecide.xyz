@@ -1,12 +1,12 @@
 from django.test import TestCase,LiveServerTestCase
 from django.core.urlresolvers import resolve
-from youdecide.views import home, meals,newRecipeAjax, lookUpByPk,recipeAjax
 from django.http import HttpRequest, QueryDict
 from django.template.loader import render_to_string
+from youdecide.views import home, meals,newRecipeAjax, lookUpByPk,recipeAjax
 from youdecide.models import Recipes, Ingredient, Instructions
 from youdecide.scripts.load_db import load_database
 from youdecide.scripts.setupSearch import ConstructSearchDict
-from youdecide.menu_programs import find_recipes, searchHelp, reverseIngredients
+from youdecide.menu_programs import find_recipes, searchHelp
 import json
 import os
 import random
@@ -81,10 +81,11 @@ class test_find_functions(TestCase):
     fixtures = ['testRecipes']
 
     def loadSearchFiles(self):
-        d = ConstructSearchDict(test=True, recipes=Recipes.objects.all())
-        d.buildPopularIngredients()
-        d.reverseIngredient()
-        d.writeDictionaryToFile('youdecide/searches/searchFiles/TestSearch3.json')
+        d = ConstructSearchDict(
+            test=True, 
+            recipes=Recipes.objects.all(),
+            )
+        d.setupAll('youdecide/searches/searchFiles/TestSearch3.json')
         assert(d.recipes == 25)
 
         #test previously searched recipes
@@ -98,18 +99,6 @@ class test_find_functions(TestCase):
             for item in i:
                 self.assertIn(item, ingredients)
 
-
-    def helpSearch(self):
-        for ingredient in ['onion','beet','beef', 'chicken,onion']:
-            x = searchHelp(ingredient)
-            for pKey in x:
-                recipe = Recipes.objects.get(pk=pKey)
-                ingredients = ' '.join(_.item for _ in recipe.ingredients())
-                for ingredient_ in ingredient.split(','):
-                    self.assertIn(ingredient_, ingredients)
-
-
-    def test_find_recipes_function(self):
         recipePKSet = set()
         request = HttpRequest()
         for _ in range(100):
@@ -127,11 +116,25 @@ class test_find_functions(TestCase):
         #test search function
         
         request = HttpRequest()
+        print(searchHelp('arctic char'))
         request.GET = QueryDict('search=Arctic+char')
         x = Recipes.objects.get(pk=find_recipes(request)).ingredients()
         self.assertIn('arctic char', " ".join(i.item for i in x))
         print('TESTING@@@@@!!!!!!!$$$$$$')
-            
+
+
+    def helpSearch(self):
+        for ingredient in ['onion','beet','beef', 'chicken,onion']:
+            x = searchHelp(ingredient)
+            for pKey in x:
+                recipe = Recipes.objects.get(pk=pKey)
+                ingredients = ' '.join(_.item for _ in recipe.ingredients())
+                for ingredient_ in ingredient.split(','):
+                    self.assertIn(ingredient_, ingredients)
+
+
+    def test_find_recipes_function(self):
+        pass
 
 
 
