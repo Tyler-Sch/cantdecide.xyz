@@ -70,9 +70,14 @@ class NewVisitor(TestCase):
         self.browser.get('http://cantdecide.xyz/youdecide/meals')
         self.browser.find_element_by_name('search').send_keys('salmon')
         self.clickNope()
+        self.browser.implicitly_wait(10)
         self.clickYep()
+        self.browser.implicitly_wait(10)
         groceryList = self.findGroceryList()
+        assert(len(groceryList) > 1)
         print(groceryList)
+        with open('testLog.txt','w') as f:
+            f.write(groceryList)
         assert('salmon' in groceryList)
 
 

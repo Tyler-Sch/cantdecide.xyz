@@ -1,16 +1,11 @@
-from django.test import TestCase,LiveServerTestCase
-from django.core.urlresolvers import resolve
+from django.test import TestCase
 from django.http import HttpRequest, QueryDict
-from django.template.loader import render_to_string
-from youdecide.views import home, meals,newRecipeAjax, lookUpByPk,recipeAjax
-from youdecide.models import Recipes, Ingredient, Instructions
-from youdecide.scripts.load_db import load_database
-from youdecide.scripts.setupSearch import ConstructSearchDict
-from youdecide.menu_programs import find_recipes, searchHelp
+from youdecide.views import meals,newRecipeAjax, lookUpByPk,recipeAjax
+from youdecide.models import Recipes
+from youdecide.menu_programs import find_recipes
 import json
 import os
 import random
-import time
 
 
 

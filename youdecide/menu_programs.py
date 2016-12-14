@@ -42,9 +42,8 @@ def searchHelp(searchString, file_='youdecide/searches/searchFiles/searchDict.js
     '''
     searchList = searchString.split(',')
     searchResults = []
-    searchFile = open(file_,'r')
-    previouslySearched = json.loads(searchFile.read())
-    searchFile.close()
+    with open(file_,'r') as searchFile:
+        previouslySearched = json.loads(searchFile.read())
     toSearch = []
     for item in searchList:
         item = item.lower().strip()

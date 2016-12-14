@@ -15,7 +15,9 @@ class ConstructSearchDict():
         run setupAll(output)
 
     '''
-    def __init__(self, test=False,ingredients=Ingredient.objects.all(), recipes=Recipes.objects.all()):
+    def __init__(
+        self, test=False, ingredients=Ingredient.objects.all(),
+        recipes=Recipes.objects.all()):
 
         self.ingredients = [i.item.lower() for i in ingredients]
         self.recipes = recipes
@@ -25,10 +27,11 @@ class ConstructSearchDict():
 
     def buildPopularIngredients(self):
         '''
-            constructs a list of ingredients that appear at least
-            twice in the recipes
+            constructs a list of ingredients that
+            appear at least twice in the recipes
 
-            gets rid of pesky errors from the ingredient converter
+            gets rid of pesky errors from the
+            ingredient converter
         '''
         for ingredient in self.ingredients:
             try:
@@ -50,19 +53,26 @@ class ConstructSearchDict():
         '''
             constucts reverse ingredient search dictionary
 
-            The ingredient is the key and the values are a list of
-            PK numbers corresponding to the database
+            The ingredient is the key and the values
+            are a list of PK numbers corresponding to
+            the database
         '''
-        self.ingredientDict = {i:[] for i in self.popularIngredients}
+        self.ingredientDict = {
+            i:[] for i in self.popularIngredients
+            }
+
         for recipe in self.recipes:
             title = recipe.title
-            ingredients = " ".join(_.item for _ in recipe.ingredients())
+            ingredients = " ".join(
+                _.item for _ in recipe.ingredients())
             for ingredient in self.popularIngredients:
                 if ingredient.title() in title:
-                    self.ingredientDict[ingredient].append(recipe.pk)
+                    self.ingredientDict[ingredient].append(
+                        recipe.pk)
                 else:
                     if ingredient in ingredients:
-                        self.ingredientDict[ingredient].append(recipe.pk)
+                        self.ingredientDict[ingredient].append(
+                            recipe.pk)
 
     def writeAFile(self, input_,outputPath):
         with open(outputPath, 'w') as f:
