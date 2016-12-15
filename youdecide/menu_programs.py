@@ -25,11 +25,20 @@ def find_recipes(request):
         options = os.listdir('youdecide/searches/searchFiles')
         for i in filterDict:
             if ''.join([i,'.json']) in options:
-                f = open('youdecide/searches/searchFiles/'+ i +'.json', 'r')
+                f = open(
+                    'youdecide/searches/searchFiles/'
+                    + i +'.json', 'r')
                 recipe_pk = json.loads(f.read())
                 f.close()
                 option_set = option_set.intersection(recipe_pk)
         return random.sample(option_set,1)[0] if option_set else 1
+        #if option_set >= 10:
+        #    return random.sample(option_set,10)
+        #elif 1 <= len(option_set) < 10:
+        #    return random.sample(option_set,len(option_set))
+        #else:
+        #   ~ return 1
+
 
 def searchHelp(searchString, file_='youdecide/searches/searchFiles/searchDict.json'):
     '''

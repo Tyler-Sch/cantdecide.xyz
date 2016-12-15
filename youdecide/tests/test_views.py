@@ -99,7 +99,10 @@ class test_filters(TestCase):
         writeAFile(
             menu_programs.restrictions,'vegan','vegan1', Recipes.objects.all())
         writeAFile(
-            menu_programs.restrictions,'vegetarian','vegetarian1',Recipes.objects.all())
+            menu_programs.restrictions,
+            'vegetarian',
+            'vegetarian1',
+            Recipes.objects.all())
         f = open('youdecide/searches/searchFiles/vegan1.json','r')
         z = open('youdecide/searches/searchFiles/vegetarian1.json')
         dirList = os.listdir('youdecide/searches/searchFiles')
@@ -129,7 +132,7 @@ class test_filters(TestCase):
         request2 = HttpRequest()
         request2.GET = QueryDict('restrictions=vegetarian1')
 
-        
+
         #test Find Recipes
 
         for i in range(10):
@@ -142,7 +145,7 @@ class test_filters(TestCase):
 
         request3 = HttpRequest()
         request3.GET = QueryDict('restrictions=vegan1&restictions=vegetarian1')
-       
+
         for i in range(10):
             x = find_recipes(request3)
             self.assertIn(x,vF)
