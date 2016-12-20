@@ -134,7 +134,7 @@ class test_filters(TestCase):
 
 
         #test Find Recipes
-
+        #NEEDS TO BE UPDATED TO USE SEARCH CLASS
         for i in range(10):
             x = find_recipes(request1)
             self.assertIn(x, vF)

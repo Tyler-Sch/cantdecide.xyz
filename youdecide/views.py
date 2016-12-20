@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from .menu_programs import find_recipes, helperGlist
 from .models import Recipes
 from youdecide.menu_programs1.searchAndReturn import RecipeSearchAndReturn
+import pickle
 
 
 def home(request):
@@ -20,12 +21,16 @@ def meals(request, days=0):
         ) if list_ else render(request,'youdecide/table.html')
 
 def newRecipeAjax(request):
-    newSearch = RecipeSearchAndReturn(
-        request, 'youdecide/searches/searchFiles/searchDict.json',5)
+    #newSearch = RecipeSearchAndReturn(
+    #    request, 'youdecide/searches/searchFiles/searchDict.json',5)
+    with open(
+        'youdecide/searches/searchFiles/pickleSearch','rb') as f:
+
+        searchClass = pickle.loads(f.read())
 
     return JsonResponse(
         Recipes.objects.get(
-            pk=newSearch.find_recipes()[0]).returnJson())
+            pk=searchClass.find_recipes(request)[0]).returnJson())
 
 def recipeAjax(request):
 

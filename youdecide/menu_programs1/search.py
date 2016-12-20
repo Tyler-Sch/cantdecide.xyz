@@ -5,8 +5,7 @@ class RecipeSearchAndReturn(object):
 
     CURRENT_RECIPE_COUNT = 9415
 
-    def __init__(self,request,searchDictPath, quantity):
-        self.request = request
+    def __init__(self,searchDictPath, quantity):
         self.quantity = quantity
         with open(searchDictPath, 'r') as f:
             self.searchDict = json.loads(f.read())
@@ -15,9 +14,9 @@ class RecipeSearchAndReturn(object):
         pass
 
 
-    def find_recipes(self):
-        restrictions = self.request.GET.getlist('restrictions')
-        search = self.request.GET.getlist('search')
+    def find_recipes(self, request):
+        restrictions = request.GET.getlist('restrictions')
+        search = request.GET.getlist('search')
         if search: search = search[0].split(',')
 
         optionSet = set(self.searchDict[''])

@@ -2,6 +2,7 @@ from youdecide.models import Ingredient, Recipes
 import json
 from .writeToDiskDecorator import writeJson
 import re
+import pickle
 
 class ConstructSearchDict(object):
     RESTRICTIONS = ['vegan','vegetarian']
@@ -30,7 +31,8 @@ class ConstructSearchDict(object):
         with open(
             'youdecide/scripts/searchTemplates/veganTemplate.json','r') as veg:
             with open(
-                'youdecide/scripts/searchTemplates/vegetarianTemplate.json','r') as veggie:
+                    'youdecide/scripts/searchTemplates/vegetarianTemplate.json','r'
+                ) as veggie:
                 vegan = json.loads(veg.read())
                 vegetarian = json.loads(veggie.read())
                 self.retrictions = dict(
@@ -132,7 +134,7 @@ class ConstructSearchDict(object):
 
         if restriction not in restrictDict:
             raise KeyError('restriction not in restrictDict')
-            
+
         #check title
         result = True if not len(set(
             re.split(r'\W+', title)).intersection(restrictDict[restriction])
