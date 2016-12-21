@@ -2,7 +2,6 @@ from youdecide.models import Ingredient, Recipes
 import json
 from .writeToDiskDecorator import writeJson
 import re
-import pickle
 
 class ConstructSearchDict(object):
     RESTRICTIONS = ['vegan','vegetarian']
@@ -102,36 +101,6 @@ class ConstructSearchDict(object):
     '''
         title = recipe.title.lower()
         if restriction in title.lower(): return True
-        '''
-        restrictDict = {'vegan':set(
-            ['pancetta','mussels','butter','bass','turbot','flounder','oxtail',
-            'veal','porterhouse','grouper','snapper','tuna','cod','trout',
-            'prawns','branzino','sole','anchovy','anchovies','sardines','calamari',
-            'halibut','prime rib','lobster','lobsters','foie gras','quail','rabbit',
-            'venison','crabs','crab','goat','proscuitto','fontina','chedder','ricotta',
-            'yogurt','cream','marscapone','mascarpone','guanciale','squid','ribs',
-            'spareribs','rib','bacon','bratwurst','turkey','steak','steaks',
-            'mozzarella','scallops','meat','pig','chicken','goose', 'beef','pork',
-            'bison','filet', 'egg ','eggs','huevos','cheese','milk','fish','sardine',
-            'haddock','shrimp','duck','lamb','ham','carne','clams','salmon',
-            'herring','chorizo','mackeral','catfish']
-            ),'vegetarian':set(
-            ['pancetta','mussels','bass','turbot','flounder','oxtail','veal',
-            'porterhouse','grouper','snapper','tuna','cod','trout','prawns',
-            'branzino','sole','anchovy','anchovies','sardines','calamari','halibut',
-            'prime rib','lobster','lobsters','foie gras','quail','rabbit',
-            'venison','crabs','crab','proscuitto','guanciale','squid','ribs',
-            'spareribs','rib','bacon','bratwurst','turkey','steak','steaks',
-            'scallops','meat','pig','chicken','goose', 'beef','pork','bison',
-            'fish','sardine','haddock','shrimp','duck','lamb','ham','carne',
-            'clams','salmon']
-            )}
-        #delete me
-        with open('veganTemplate.json','w') as veg:
-            with open('vegetarianTemplate.json','w') as veget:
-                veget.write(json.dumps(list(restrictDict['vegetarian'])))
-                veg.write(json.dumps(list(restrictDict['vegan'])))
-        '''
 
         if restriction not in self.restrictDict:
             raise KeyError('restriction not in restrictDict')

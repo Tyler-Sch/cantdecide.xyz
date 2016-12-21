@@ -7,32 +7,36 @@ Needs the NYtimes ingredient parser ../NYTimesRecipeTK/ingredient-phrase-tagger-
 
 import os
 import json
-from youdecide.scripts import load_db
-from youdecide.searches.queryWrapper import writeAFile
+from youdecide.scripts import load_db, setupSearch
 from youdecide.models import Recipes
+from youdecide.menu_programs1.search import RecipeSearchAndReturn
 from youdecide import menu_programs
+import pickle
 
 
 
-for item in os.listdir('youdecide/searches/searchFiles'):
-    os.remove('youdecide/searches/searchFiles/'+item)
+searchDictPath = 'youdecide/searches/searchFiles/searchDict.json'
+quantity = 5  #how long of list of recipes does find_recipes return
+pickleFile = 'youdecide/searches/searchFiles/pickleSearch'
 
-for item in os.listdir('youdecide/searches/searchFiles/reverseIngredient'):
-    os.remove('youdecide/searches/searchFiles/reverseIngredient/'+item)
-    
-#delete test when running live
-#make sure to include the / at the end of directories
-Recipes.objects.create(title='Sorry, no recipe could be found')
+#uncomment out if you build from scratch
+#Recipes.objects.create(title='Sorry, no recipe could be found')
+#
+#for item in os.listdir('recipes/mains/'):
+#    with open('recipes/mains/'+item, 'r') as f:
+#        recipeDict = json.loads(f.read())
+#        load_db.load_database(recipeDict)
 
-for item in os.listdir('recipes/mains/'):
-    with open('recipes/mains/'+item, 'r') as f:
-        recipeDict = json.loads(f.read())
-        load_db.load_database(recipeDict)
+ingredients = Ingredient.obejects.all()
+recipes = Recipes.objects.all()
 
+setupSearch_ = setupSearch.ConstructSearchDict(
+    ingredients=ingredients,recipes=recipes)
 
-restrictions = set(['vegan','vegetarian'])
+setupSearch.setupAll(searchDictPath)
 
-for i in restrictions:
-    writeAFile(menu_programs.restrictions, i, i, Recipes.objects.all())
-        
+#create Pickle
 
+search = RecipeSearchAndReturn(searchDictPath,quantity)
+with open(pickleFile, 'wb') as f:
+    f.write(pickle.dumps(search))
