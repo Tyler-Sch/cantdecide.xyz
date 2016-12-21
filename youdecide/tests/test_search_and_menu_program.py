@@ -2,74 +2,104 @@ from django.test import TestCase
 from django.http import HttpRequest, QueryDict
 from youdecide.models import Recipes
 from youdecide.scripts.setupSearch import ConstructSearchDict
-from youdecide.menu_programs import find_recipes, searchHelp
-import pickle
 from youdecide.menu_programs1.search import RecipeSearchAndReturn
+import pickle
 import json
 import random
+import os
 
 
 class Test_find_functions(TestCase):
     fixtures = ['testRecipes']
+    dictionaryLocation = 'youdecide/searches/searchFiles/TestSearch3.json'
+    pickleLocation = 'youdecide/searches/searchFiles/testPickleSearch'
+    howManyRecipes = 5
+    with open('youdecide/scripts/searchTemplates/veganTemplate.json','r') as f:
+        nonVeganFoods = json.loads(f.read())
 
-    def test_loadSearchFiles(self):
+    def setUp(self):
         d = ConstructSearchDict(
             test=True,
-            recipes=Recipes.objects.all(),
-            )
-        d.setupAll('youdecide/searches/searchFiles/TestSearch3.json')
+            recipes=Recipes.objects.all())
+        d.setupAll(self.dictionaryLocation)
+        search = RecipeSearchAndReturn(self.dictionaryLocation,self.howManyRecipes)
+        with open(self.pickleLocation,'wb') as f:
+            f.write(pickle.dumps(search))
 
-        assert(len(Recipes.objects.all()) == 25)
+    def tearDown(self):
+        for file_ in [self.dictionaryLocation, self.pickleLocation]:
+            os.remove(file_)
 
-        #test previously searched recipes
-        testFile = 'youdecide/searches/searchFiles/TestSearch3.json'
+    def test_loadSearchFiles(self):
+        self.assertEqual(len(Recipes.objects.all()),25)
 
-        #CHANGE TO NEW FILES
-        #NEED TO CONSTRUCT SEARCH OBJECT AND PICKLE IT
-        x = searchHelp('arctic char',testFile)
+        #should only be lower case entries in searchDict
+        with open(self.dictionaryLocation,'r') as dict_:
+            searchDict = json.loads(dict_.read())
+            assert('chicken' in searchDict)
+            assert('arctic char fillets' in searchDict)
+            assert(len(searchDict['chicken']) > 3)
 
-        #CHANGE TO NEW FILES
-        for i in ['arctic char fillets','chicken','chicken,onion']:
-            x = random.sample(searchHelp(i,testFile),1)
+        with open(self.pickleLocation,'rb') as searchFile:
+            search = pickle.loads(searchFile.read())
+            listOfSearchMethods = dir(search)
+            self.assertIn('find_recipes', listOfSearchMethods)
+            self.assertIn('searchHelp',listOfSearchMethods)
+
+
+    def test_find_recipes(self):
+        self.assertEqual(len(Recipes.objects.all()),25)
+
+        #load_search_object and Http Request
+        request = HttpRequest()
+
+        with open(self.pickleLocation,'rb') as s:
+            search = pickle.loads(s.read())
+            assert(len(search.find_recipes(request)) == self.howManyRecipes)
+
+
+        #searchHelp tests
+        for i in [['arctic char fillets'],['chicken'],['chicken','onion']]:
+            x = random.sample(search.searchHelp(i),1)
             recipe = Recipes.objects.get(pk=x[0])
             ingredients = " ".join(i.item for i in recipe.ingredients())
-            for item in i.split(","):
+            for item in i:
                 self.assertIn(item, ingredients)
 
-        recipePKSet = set()
-        request = HttpRequest()
-        #CHANGE TO NEW FIND_RECIPES
-        for _ in range(100):
-            recipePKSet.add(find_recipes(request))
 
-        assert(len(recipePKSet) > 15)
         request.GET = QueryDict('restrictions=vegan')
-        f = open('youdecide/searches/searchFiles/vegan.json','r')
-        restrictions = json.loads(f.read())
-        f.close()
-
-        for _ in range(100):
-            self.assertIn(find_recipes(request), restrictions)
-
-
+        veganList = search.find_recipes(request)
+        #assert that if find_recipes doesnt have enough recipes to fill 
+        #a quanity, it returns a shorter list ending in a 1
+        assert(veganList[-1] == 1)
+        assert(len(veganList) > 1)
+        assert(len(veganList) < self.howManyRecipes)
 
 
-    def test_helpSearch(self):
-        for ingredient in ['onion','beet','beef', 'chicken,onion']:
-            #NEW SEARCH HELP NEEDS TESTING
-            x = searchHelp(ingredient, 'youdecide/searches/searchFiles/TestSearch3.json')
-            for pKey in x:
-                recipe = Recipes.objects.get(pk=pKey)
-                ingredients = ' '.join(_.item for _ in recipe.ingredients())
-                for ingredient_ in ingredients.split(','):
-                    self.assertIn(ingredient_, ingredients)
+        for recipePK in veganList:
+            recipe = Recipes.objects.get(pk=recipePK)
+            ingredients = " ".join([_.item for _ in recipe.ingredients()])
+            for nonVeggie in self.nonVeganFoods:
+                self.assertNotIn(nonVeggie, ingredients)
+
+        request.GET = QueryDict('restrictions=vegan&search=chicken')
+        nonSensicalFindRecipe = search.find_recipes(request)
+        self.assertEqual(nonSensicalFindRecipe[0], 1)
+        assert(len(nonSensicalFindRecipe) == 1)
 
 
-    def test_find_recipe_function(self):
+
+
+
+
+
+
+
+    #def test_find_recipe_function(self):
         #YEP, THIS ONE IS USELESS TOO
-        request = HttpRequest()
-        find_recipes_result = find_recipes(request)
-        assert(len(find_recipes_result) > 1)
+        #request = HttpRequest()
+        #find_recipes_result = find_recipes(request)
+        #assert(len(find_recipes_result) > 1)
 
 
 
