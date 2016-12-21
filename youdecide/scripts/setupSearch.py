@@ -35,7 +35,7 @@ class ConstructSearchDict(object):
                 ) as veggie:
                 vegan = json.loads(veg.read())
                 vegetarian = json.loads(veggie.read())
-                self.retrictions = dict(
+                self.restrictDict = dict(
                     vegan=set(vegan), vegetarian=set(vegetarian))
 
     def buildPopularIngredients(self):
@@ -102,6 +102,7 @@ class ConstructSearchDict(object):
     '''
         title = recipe.title.lower()
         if restriction in title.lower(): return True
+        '''
         restrictDict = {'vegan':set(
             ['pancetta','mussels','butter','bass','turbot','flounder','oxtail',
             'veal','porterhouse','grouper','snapper','tuna','cod','trout',
@@ -130,14 +131,14 @@ class ConstructSearchDict(object):
             with open('vegetarianTemplate.json','w') as veget:
                 veget.write(json.dumps(list(restrictDict['vegetarian'])))
                 veg.write(json.dumps(list(restrictDict['vegan'])))
+        '''
 
-
-        if restriction not in restrictDict:
+        if restriction not in self.restrictDict:
             raise KeyError('restriction not in restrictDict')
 
         #check title
         result = True if not len(set(
-            re.split(r'\W+', title)).intersection(restrictDict[restriction])
+            re.split(r'\W+', title)).intersection(self.restrictDict[restriction])
             ) else False
         #check ingredients
         if result:
@@ -146,7 +147,7 @@ class ConstructSearchDict(object):
             )
             joinedSet = set(re.split(r'\W+'," ".join(ingredients)))
             if restriction in joinedSet: return True
-            if len(joinedSet.intersection(restrictDict[restriction])):
+            if len(joinedSet.intersection(self.restrictDict[restriction])):
                 return False
 
         return result
