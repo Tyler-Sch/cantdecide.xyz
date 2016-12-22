@@ -3,19 +3,20 @@ from django.http import HttpRequest, QueryDict
 from youdecide.views import meals,newRecipeAjax, lookUpByPk,recipeAjax
 from youdecide.models import Recipes
 from youdecide.menu_programs import find_recipes
+from youdecide.tests.meta import MetaClassForTests
 import json
 import os
 import random
 
 
 
-class test_views(TestCase):
-    fixtures = ['testRecipes']
+class test_views(MetaClassForTests):
+
     requests = {}
     for i in range(3):
         requests['request{}'.format(i)] = HttpRequest()
-    randomNumber = random.randint(1,25)
-    randomNumber2 = random.randint(1,25)
+    randomNumber = random.randint(1,24)
+    randomNumber2 = random.randint(1,24)
     requests['request2'].GET = QueryDict(
         'PK={}&PK={}'.format(randomNumber, randomNumber2))
     requests['request1'].GET = QueryDict(
@@ -36,10 +37,16 @@ class test_views(TestCase):
 
     def test_newRecipeAjax(self):
         attrs = ['pk','yiel','imgUrl','title','url']
+
         responseSet = set()
+        request = HttpRequest()
+        response = newRecipeAjax(request, test_=True)
+        print(response)
+
         for _ in range(5):
-            print(self.requests['request1'])
-            response = str(newRecipeAjax(self.requests['request1']).content)
+            response = str(
+                newRecipeAjax(self.requests[
+                'request1'],test_=True).content)
             for i in attrs:
                 self.assertIn(i, response)
             responseSet.add(response)
@@ -66,7 +73,7 @@ class test_views(TestCase):
                 continue
         if count > 2:
             raise AssertionError('Check test_recipeAjax test')
-
+        
         response = str(recipeAjax(self.requests['request2']).content)
         ingredients2 = [i.item for i in Recipes.objects.all()[self.randomNumber2-1].ingredients()]
         count = 0

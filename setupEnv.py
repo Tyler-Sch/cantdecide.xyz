@@ -11,13 +11,15 @@ from youdecide.scripts import load_db, setupSearch
 from youdecide.models import Recipes
 from youdecide.menu_programs1.search import RecipeSearchAndReturn
 from youdecide import menu_programs
+from youdecide import config
 import pickle
 
 
 
-searchDictPath = 'youdecide/searches/searchFiles/searchDict.json'
+
+searchDictPath = config.PATHS['SEARCHDICTPATH']
 quantity = 5  #how long of list of recipes does find_recipes return
-pickleFile = 'youdecide/searches/searchFiles/pickleSearch'
+pickleFile = config.PATHS['PICKLEDSEARCH']
 
 #uncomment out if you build from scratch
 #Recipes.objects.create(title='Sorry, no recipe could be found')
