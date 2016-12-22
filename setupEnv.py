@@ -8,7 +8,7 @@ Needs the NYtimes ingredient parser ../NYTimesRecipeTK/ingredient-phrase-tagger-
 import os
 import json
 from youdecide.scripts import load_db, setupSearch
-from youdecide.models import Recipes
+from youdecide.models import Recipes, Ingredient
 from youdecide.menu_programs1.search import RecipeSearchAndReturn
 from youdecide import menu_programs
 from youdecide import config
@@ -29,13 +29,13 @@ pickleFile = config.PATHS['PICKLEDSEARCH']
 #        recipeDict = json.loads(f.read())
 #        load_db.load_database(recipeDict)
 
-ingredients = Ingredient.obejects.all()
+ingredients = Ingredient.objects.all()
 recipes = Recipes.objects.all()
 
 setupSearch_ = setupSearch.ConstructSearchDict(
     ingredients=ingredients,recipes=recipes)
 
-setupSearch.setupAll(searchDictPath)
+setupSearch_.setupAll(searchDictPath)
 
 #create Pickle
 

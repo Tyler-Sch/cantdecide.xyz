@@ -1,7 +1,9 @@
 from youdecide.models import Ingredient, Recipes
+from youdecide import config
 import json
 from .writeToDiskDecorator import writeJson
 import re
+
 
 class ConstructSearchDict(object):
     RESTRICTIONS = ['vegan','vegetarian']
@@ -27,11 +29,9 @@ class ConstructSearchDict(object):
         self.ingredientDict = {}
         self.popularIngredients = {}
         self.test = test
-        with open(
-            'youdecide/scripts/searchTemplates/veganTemplate.json','r') as veg:
+        with open(config.PATHS['VEGAN_TEMPLATE_PATH'],'r') as veg:
             with open(
-                    'youdecide/scripts/searchTemplates/vegetarianTemplate.json','r'
-                ) as veggie:
+                config.PATHS['VEGETARIAN_PATH'],'r') as veggie:
                 vegan = json.loads(veg.read())
                 vegetarian = json.loads(veggie.read())
                 self.restrictDict = dict(

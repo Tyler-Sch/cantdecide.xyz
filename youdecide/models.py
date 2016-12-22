@@ -9,7 +9,7 @@ class Recipes(models.Model):
     total_time = models.CharField(max_length=100,default='')
     time_plus = models.CharField(max_length=1, default='')
     imgUrl = models.URLField(default='')
-    
+
     def __str__(self):
         return self.title
 
@@ -22,19 +22,28 @@ class Recipes(models.Model):
 
     def returnJson(self):
         '''
-        doesnt actually return json since Djangos new JsonResponse returns it automatically. 
-        Instead method returns dict that is easily converted into json
+        doesnt actually return json;
+        returns dict that is easily converted into json
         '''
 
-        return {'url':self.url, 'title':self.title,'yiel':self.yiel,'active_time':self.active_time,
-            'total_time':self.total_time,'imgUrl':self.imgUrl, 'pk':self.pk}
+        return {
+            'url':self.url,
+            'title':self.title,
+            'yiel':self.yiel,
+            'active_time':self.active_time,
+            'total_time':self.total_time,
+            'imgUrl':self.imgUrl,
+            'pk':self.pk}
 
     def ingredientsJson(self):
-        ''' 
-        again: returns a list of tuples that is easily converted [(amount, item, original_txt)]
+        '''
+        again: returns a list of tuples that is easily converted
+        [(amount, item, original_txt)]
         '''
 
-        return [(ingredient.item, ingredient.display) for ingredient in self.ingredients()]
+        return [
+            (ingredient.item, ingredient.display
+            ) for ingredient in self.ingredients()]
 
 
 

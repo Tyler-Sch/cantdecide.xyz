@@ -10,10 +10,10 @@ import os
 
 class MetaClassForTests(TestCase):
     fixtures = ['testRecipes']
-    dictionaryLocation = 'youdecide/searches/searchFiles/TestSearch3.json'
-    pickleLocation = 'youdecide/searches/searchFiles/testPickleSearch'
+    dictionaryLocation = config.TESTPATHS['SEARCH_DICT_PATH_TEST']
+    pickleLocation = config.TESTPATHS['PICKLEDSEARCH']
     howManyRecipes = 5
-    with open('youdecide/scripts/searchTemplates/veganTemplate.json','r') as f:
+    with open(config.PATHS['VEGAN_TEMPLATE_PATH'],'r') as f:
         nonVeganFoods = json.loads(f.read())
 
     def setUp(self):

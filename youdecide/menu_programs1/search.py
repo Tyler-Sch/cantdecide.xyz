@@ -50,8 +50,8 @@ class RecipeSearchAndReturn(object):
             item = item.lower().strip()
             if item not in self.searchDict:
                 with open(
-                    'youdecide/searches/searchFiles/\
-                    errorLog.txt','a') as f:
+                    'youdecide/searches/searchFiles/'
+                    +'errorLog.txt','a') as f:
                     f.write(item)
             else:
                 searchResults.append(set(self.searchDict[item]))

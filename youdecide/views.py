@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from .menu_programs import find_recipes, helperGlist
 from .models import Recipes
-from youdecide.menu_programs1.searchAndReturn import RecipeSearchAndReturn
 from youdecide import config
 import pickle
 
@@ -24,7 +23,7 @@ def meals(request, days=0):
 def newRecipeAjax(request,test_=False):
     with open(config.PATHS['PICKLEDSEARCH'],'rb') as f:
         searchClass = pickle.loads(f.read())
-    if test_==True: 
+    if test_==True:
         with open(config.TESTPATHS['PICKLEDSEARCH'],'rb') as f:
             searchClass = pickle.loads(f.read())
 
