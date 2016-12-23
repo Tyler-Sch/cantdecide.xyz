@@ -1,12 +1,13 @@
 import random
 import json
+from youdecide.config import PATHS
 
 class RecipeSearchAndReturn(object):
 
     #because Recipes.objects.all() is so slow, particularly as
     #the database grows, I've opted to make manual changes to 
     #amount total amount of recipes to search
-    CURRENT_RECIPE_COUNT = 9415
+    CURRENT_RECIPE_COUNT = PATHS['RECIPE_COUNT'] 
 
     def __init__(self,searchDictPath, quantity):
         self.quantity = quantity
