@@ -2,7 +2,6 @@ from django.test import TestCase
 from django.http import HttpRequest, QueryDict
 from youdecide.views import meals,newRecipeAjax, lookUpByPk,recipeAjax
 from youdecide.models import Recipes
-from youdecide.menu_programs import find_recipes
 from youdecide.tests.meta import MetaClassForTests
 import json
 import os

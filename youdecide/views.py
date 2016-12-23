@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
-from .menu_programs import find_recipes, helperGlist
+from youdecide.menu_programs1.groceryHelper import helperGlist
 from .models import Recipes
 from youdecide import config
 import pickle
