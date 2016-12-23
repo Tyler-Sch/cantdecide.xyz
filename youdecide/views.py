@@ -10,7 +10,7 @@ def home(request):
 
     return render(request, 'youdecide/home.html')
 
-def meals(request, days=0):
+def meals(request):
 
     list_ = request.GET.getlist('PK')
     if list_:
